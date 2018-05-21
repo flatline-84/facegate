@@ -2,6 +2,16 @@
 
 FaceGate is a novel program to classify actions from a variety of input sources to then control a hardware component.
 
+## Required Python libraries
+### Can be installed with `pip`
+* numpy - math calculations and data handling
+* opencv-python - openCV bindings for Python
+* pystasm - openStasm bindings for Python. Requires OpenCV source
+* Pillow - Imaging library to display images
+
+### Needed library modules
+pystasm requires the OpenCV source code to be installed on your system
+
 ## Doing Your Work
 
 ### Create a Branch

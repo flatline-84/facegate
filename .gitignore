@@ -1,1 +1,2 @@
 *.py[cod]
+modules/*/__pycache__/*py[cod]

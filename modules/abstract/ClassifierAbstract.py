@@ -35,3 +35,10 @@ class ClassifierAbstractClass(ABC):
     def getAction(self):
         # print("Overload classifier data function!")
         pass
+
+    """
+        Passes the GUI window into the class to be used to display things. There will be a log and an image viewer.
+    """
+    @abstractmethod
+    def display(self, window):
+        pass
