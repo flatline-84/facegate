@@ -38,10 +38,12 @@ if __name__ == '__main__':
 
         classifier.update(data)
         action = classifier.getAction()
+        classifier.display(window)
 
         # print("Action: ", action)
 
         hardware.update(action)
+        hardware.display(window)
 
         window.update()
         window.update_idletasks() 
