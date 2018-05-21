@@ -4,24 +4,28 @@ from PIL import Image, ImageTk
 import threading
 import sys
 
-class WindowManager(threading.Thread):
+# class WindowManager(threading.Thread):
+class WindowManager():
 
 
     # Tkinter specific code
     def __init__(self):
-        threading.Thread.__init__(self)
-        self._stop_event = threading.Event()
-        self.start()
+        # threading.Thread.__init__(self)
+        # self._stop_event = threading.Event()
+        # self.start()
+        self.run()
 
     def stop(self):
-        self._stop_event.set()
+        # self._stop_event.set()
+        self._stop_event = True
 
     def stopped(self):
-        return self._stop_event.is_set()
+        # return self._stop_event.is_set()
+        return self._stop_event
 
     def callback(self):
         self.root.quit()
-        self.shutdown_flag.set()
+        # self.shutdown_flag.set()
         # self.join()
         sys.exit(0)
 
@@ -58,6 +62,7 @@ class WindowManager(threading.Thread):
         Label(self.root, text="Log Output").grid(row=0, column=0, sticky=W)
         self.scrollbar = Scrollbar(self.root)
         self.log_text_frame = Text(self.root)
+        self.line_number = 1
         self.scrollbar.grid(row=1, column=0, sticky=W)
         self.log_text_frame.grid(row=1, column=0, sticky=N)
         # Config scrollbar for logging window
@@ -93,13 +98,22 @@ class WindowManager(threading.Thread):
         # self.log_text_frame.insert(END, quote) 
 
 
-        self.shutdown_flag = threading.Event()
+        # self.shutdown_flag = threading.Event()
 
-        self.root.mainloop()
+        # self.root.mainloop()
+        self._stop_event = False
+
 
 
     def print(self, text):
-        self.log_text_frame.insert(END, text)
+        self.log_text_frame.insert(END, str(self.line_number) +": ")
+        self.log_text_frame.insert(END, text+"\n") 
+        self.log_text_frame.see("end")
+
+        self.line_number += 1
     
     def update(self):
         self.root.update()
+
+    def update_idletasks(self):
+        self.root.update_idletasks()

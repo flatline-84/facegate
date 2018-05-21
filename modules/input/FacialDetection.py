@@ -15,5 +15,5 @@ class FacialDetection(InputAbstractClass):
         return [10,20,39,12]
 
     def display(self, window):
-        window.print("Yo mama")
+        # window.print("Yo mama")
         pass

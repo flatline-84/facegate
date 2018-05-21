@@ -23,15 +23,12 @@ if __name__ == '__main__':
     window = WindowManager()  
 
     while(running):
-
         # If user presses 'q' key, program will quit
         if (window.stopped()):
             print ("Killing program")
             window.callback()
             break
-
-
-
+  
         # continue
         inputDevice.update()
         data = inputDevice.getData()
@@ -46,8 +43,5 @@ if __name__ == '__main__':
 
         hardware.update(action)
 
-        # window.update()
-
-        # Remove this to have the program run indefinitely
-        # running = False
-
+        window.update()
+        window.update_idletasks() 
