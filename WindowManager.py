@@ -7,7 +7,6 @@ import sys
 # class WindowManager(threading.Thread):
 class WindowManager():
 
-
     # Tkinter specific code
     def __init__(self):
         # threading.Thread.__init__(self)
@@ -36,6 +35,9 @@ class WindowManager():
         print_str = "Key Pressed: " + repr(event.char)
         self.print(print_str)
 
+        for f in self.keyboard_funcs:
+            f(event.char)
+
         # return event.char        
         if (event.char == 'q'):
             self.stop()
@@ -43,13 +45,20 @@ class WindowManager():
     def mouse(self, event):
         self.root.focus_set()
         print_str = "Click at: " + str(event.x) + ":" + str(event.y)
+
+        for f in self.mouse_funcs:
+            f(event.x, event.y)
         
         self.print(print_str)
 
 
-
     # Main function for tkinter where everything initializes
     def init(self):
+
+        self.keyboard_funcs = []
+        self.mouse_funcs = []
+
+        # Tkinter drawing code
         self.root = tk.Tk()
         self.root.protocol("WM_DELETE_WINDOW", self.callback)
 
@@ -125,3 +134,9 @@ class WindowManager():
 
     def update_idletasks(self):
         self.root.update_idletasks()
+
+    def register_keyboard(self, func):
+        self.keyboard_funcs.append(func)
+
+    def register_mouse(self, func):
+        self.mouse_funcs.append(func)

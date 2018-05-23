@@ -12,3 +12,9 @@ class Arduino(HardwareAbstractClass):
 
     def display(self, window):
         pass
+
+    def keyboard(self, key):
+        pass
+
+    def mouse_click(self, x, y):
+        pass

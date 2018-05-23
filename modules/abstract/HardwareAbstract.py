@@ -34,3 +34,17 @@ class HardwareAbstractClass(ABC):
     @abstractmethod
     def display(self, window):
         pass
+
+    """
+        Triggers when there is  a keyboard press.
+    """
+    @abstractmethod
+    def keyboard(self, key):
+        pass
+
+    """
+        Returns coordinates of where there is a mouse click
+    """
+    @abstractmethod
+    def mouse_click(self, x, y):
+        pass

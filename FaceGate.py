@@ -22,6 +22,14 @@ if __name__ == '__main__':
 
     window = WindowManager()  
 
+    window.register_keyboard(inputDevice.keyboard)
+    window.register_keyboard(classifier.keyboard)
+    window.register_keyboard(hardware.keyboard)
+
+    window.register_mouse(inputDevice.mouse_click)
+    window.register_mouse(classifier.mouse_click)
+    window.register_mouse(hardware.mouse_click) 
+
     while(running):
         # If user presses 'q' key, program will quit
         if (window.stopped()):

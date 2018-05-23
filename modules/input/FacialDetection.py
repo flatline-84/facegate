@@ -137,6 +137,8 @@ class FacialDetection(InputAbstractClass):
             "Down": False
         }
 
+        self.window = None
+
         self.deadZoneLeft = 0
         self.deadZoneRight = 0
         self.deadZoneUp = 0
@@ -160,9 +162,9 @@ class FacialDetection(InputAbstractClass):
             print ("Cannot open VideoCamera! Make sure you have the right one set in FacialDetection.py")
 
     def update(self):
-        ret, self.frame = self.cap.read()
+        self.ret, self.frame = self.cap.read()
 
-        if ret == True:
+        if self.ret == True:
 
             self.frame = cv2.flip(self.frame, 1)
             
@@ -227,14 +229,22 @@ class FacialDetection(InputAbstractClass):
 
     def display(self, window):
 
-        if (not self.face_found):
+        self.window = window
+
+        if (not self.face_found and self.ret):
             window.print("No face found")
         
         if (self.frame is not None):
             # print (type(self.frame))
             # window.update_image(np.array(self.frame))
             image = Image.fromarray(self.frame)
-            image.save("test.jpg")
+            # image.save("test.jpg")
             window.update_image(image)
         # pass
+
+    def keyboard(self, key):
+        self.window.print("Got key in face rec: " + key)
+
+    def mouse_click(self, x, y):
+        pass
         
