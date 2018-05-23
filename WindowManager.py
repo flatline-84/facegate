@@ -66,6 +66,8 @@ class WindowManager():
         self.root.title("Facegate")
         # self.root.geometry("640x480")
         self.root.geometry("1280x480")
+        # self.root.geometry("1920x480")
+
         self.root.configure(background = "white")
 
         ## Add our event handlers
@@ -94,6 +96,15 @@ class WindowManager():
         Marcela Klocker - s3487194"
 
         self.info_text_frame.insert(END, self.info_text)
+
+        # Canvas Window
+        self.canvas = Canvas(self.root, bg="white", height=480, width=320)
+        self.canvas.grid(row=0, column=2, rowspan=2)
+        # x1, y1, x2, y2 - top left to bottom right
+        # self.canvas_size = self.canvas.bbox(None)
+        # print (self.canvas_size)
+        coord = 10, 50, 240, 210
+        arc = self.canvas.create_arc(coord, start=0, extent=150, fill="blue")
 
         ## Organize image 
         self.im = Image.open('numbered.jpg')
