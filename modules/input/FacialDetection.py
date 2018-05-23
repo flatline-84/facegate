@@ -1,7 +1,14 @@
 from ..abstract.InputAbstract import InputAbstractClass
 import numpy as np
 import cv2
-import stasm
+
+import importlib
+stasm_spec = importlib.util.find_spec("stasm")
+found = stasm_spec is not None
+
+if found:
+    import stasm
+
 from PIL import Image
 
 class FacialDetection(InputAbstractClass):
@@ -164,7 +171,7 @@ class FacialDetection(InputAbstractClass):
     def update(self):
         self.ret, self.frame = self.cap.read()
 
-        if self.ret == True:
+        if self.ret == True and found:
 
             self.frame = cv2.flip(self.frame, 1)
             
