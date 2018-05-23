@@ -3,7 +3,8 @@ import numpy as np
 import cv2
 
 import importlib
-stasm_spec = importlib.util.find_spec("stasm")
+#stasm_spec = importlib.util.find_spec("stasm")
+stasm_spec = importlib.find_loader("stasm")
 found = stasm_spec is not None
 
 if found:
