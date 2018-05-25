@@ -233,7 +233,8 @@ class FacialDetection(InputAbstractClass):
 
     def getData(self):
         # print ("Facial get data!")
-        return self.landmarks
+        # return self.landmarks
+        return self.actions
 
     def display(self, window):
 
@@ -245,8 +246,10 @@ class FacialDetection(InputAbstractClass):
         if (self.frame is not None):
             # print (type(self.frame))
             # window.update_image(np.array(self.frame))
+            self.frame = self.frame[...,::-1]
             image = Image.fromarray(self.frame)
             # image.save("test.jpg")
+
             window.update_image(image)
         # pass
 

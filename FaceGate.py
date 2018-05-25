@@ -50,8 +50,10 @@ if __name__ == '__main__':
 
         # print("Action: ", action)
 
-        hardware.update(action)
+        hardware.update(inputDevice.getData())
         hardware.display(window)
+
+        # hardware.connect()
 
         window.update()
         window.update_idletasks() 
