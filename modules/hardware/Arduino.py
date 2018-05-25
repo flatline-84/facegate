@@ -39,7 +39,10 @@ class Arduino(HardwareAbstractClass):
         # print ("Arduino init!")
         print ("running magical things!")
         # arduino = serial.Serial('/dev/cu.usbmodem1441', 9600, timeout=.1)
-        self.arduino  = serial.Serial('/dev/ttyACM0', 19200, timeout=0.1)
+        try:
+            self.arduino  = serial.Serial('/dev/ttyACM0', 19200, timeout=0.1)
+        except:
+            print ("Arduino not connected!")
         # self.arduino  = serial.Serial('/dev/ttyACM0', 9600, timeout=0.1)
 
         # time.sleep(1)
@@ -75,8 +78,8 @@ class Arduino(HardwareAbstractClass):
                 self.servos[1].decreaseRotation(2)
 
         if (self.elapsed_time >= 8):
-            print ("Elapsed time: ", self.elapsed_time)
-            print("Current time: ", time.time())
+            # print ("Elapsed time: ", self.elapsed_time)
+            # print("Current time: ", time.time())
             self.connect()
             self.elapsed_time = 0
             self.start = time.time()

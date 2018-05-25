@@ -104,7 +104,7 @@ class WindowManager():
         # self.canvas_size = self.canvas.bbox(None)
         # print (self.canvas_size)
         coord = 10, 50, 240, 210
-        arc = self.canvas.create_arc(coord, start=0, extent=150, fill="blue")
+        # arc = self.canvas.create_arc(coord, start=0, extent=150, fill="blue")
 
         ## Organize image 
         self.im = Image.open('numbered.jpg')
