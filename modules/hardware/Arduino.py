@@ -39,7 +39,9 @@ class Arduino(HardwareAbstractClass):
         # print ("Arduino init!")
         print ("running magical things!")
         # arduino = serial.Serial('/dev/cu.usbmodem1441', 9600, timeout=.1)
-        self.arduino  = serial.Serial('/dev/ttyACM0', 9600, timeout=0.1)
+        self.arduino  = serial.Serial('/dev/ttyACM0', 19200, timeout=0.1)
+        # self.arduino  = serial.Serial('/dev/ttyACM0', 9600, timeout=0.1)
+
         # time.sleep(1)
         # dataVal = b"0"
         # dataVal1 = b"45"
@@ -63,16 +65,16 @@ class Arduino(HardwareAbstractClass):
         if action is not None:
             if (action["Left"]):
                 # print ("Action left")
-                self.servos[0].increaseRotation(1)
+                self.servos[0].increaseRotation(2)
             if (action["Right"]):
-                self.servos[0].decreaseRotation(1)
+                self.servos[0].decreaseRotation(2)
 
             if (action["Up"]):
-                self.servos[1].increaseRotation(1)
+                self.servos[1].increaseRotation(2)
             if (action["Down"]):
-                self.servos[1].decreaseRotation(1)
+                self.servos[1].decreaseRotation(2)
 
-        if (self.elapsed_time >= 10):
+        if (self.elapsed_time >= 8):
             print ("Elapsed time: ", self.elapsed_time)
             print("Current time: ", time.time())
             self.connect()
