@@ -1,18 +1,23 @@
 #Import rendering window 
 import tkinter
-from WindowManager import WindowManager 
+# from WindowManager import WindowManager
+from WindowManagerTwo import WindowManager 
+
 
 # Import custom modules 
 from modules.input import FacialDetection
 from modules.classifier import FaceClassifier
 from modules.hardware import Arduino
+from modules.hardware import FaceSimulation
 
 
 if __name__ == '__main__':
     print("Hello world!")
     inputDevice = FacialDetection.FacialDetection()
     classifier = FaceClassifier.FaceClassifier()
-    hardware = Arduino.Arduino()
+    # hardware = Arduino.Arduino()
+    hardware = FaceSimulation.FaceSimulation()
+
 
     inputDevice.init()
     classifier.init()

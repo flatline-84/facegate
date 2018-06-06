@@ -233,8 +233,8 @@ class FacialDetection(InputAbstractClass):
 
     def getData(self):
         # print ("Facial get data!")
-        # return self.landmarks
-        return self.actions
+        return self.landmarks
+        # return self.actions
 
     def display(self, window):
 

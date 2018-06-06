@@ -97,9 +97,6 @@ class Arduino(HardwareAbstractClass):
 
     def connect(self):
 
-        # if (self.counter >= len(self.data)):
-        #     self.counter = 0
-
         packet = ""
         for s in self.servos:
             packet += s.getDataPacket()
@@ -115,13 +112,3 @@ class Arduino(HardwareAbstractClass):
             print('Sent...')
         except:
             print ("Arduino disconnected!")
-
-        # self.arduino.write(bytes(self.data[self.counter]))
-
-        # self.counter += 1
-        # data = self.arduino.readline()
-        # time.sleep(2)
-        # while data == "":
-        #     print ("no data recieved ")
-
-        # print("recieved data: " + str(data))
