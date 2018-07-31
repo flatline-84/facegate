@@ -7,7 +7,8 @@ class FaceSimulation(HardwareAbstractClass):
         self.window = None
         self.data = None
         self.points = []
-        self.offset = -140
+        # self.offset = -100
+        self.offset = 0
 
     def update(self, action):
         # print ("Overload classifier update function!")
@@ -21,7 +22,7 @@ class FaceSimulation(HardwareAbstractClass):
             pass
 
         if (len(self.points) == 0):
-            print(len(self.data))
+            # print(len(self.data))
             for i in range(len(self.data) - 1):
                 self.points.append(self.window.canvas.create_line(self.data[i][0] + self.offset, self.data[i][1] , self.data[i+1][0] + self.offset, self.data[i+1][1], fill="blue", width=2))
                 print( self.data[i])

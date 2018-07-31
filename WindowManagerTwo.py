@@ -74,32 +74,32 @@ class WindowManager():
         self.root.bind("<Key>", self.key)
         self.root.bind("<Button-1>", self.mouse)
         
-        ## Initialize logging window
-        # Label(self.root, text="Log Output").grid(row=0, column=0, sticky=W)
-        self.scrollbar = Scrollbar(self.root)
-        self.log_text_frame = Text(self.root)
-        self.line_number = 1
-        # self.scrollbar.grid(row=0, column=0, sticky=W)
-        self.log_text_frame.grid(row=0, column=0, sticky=N)
+        # ## Initialize logging window
+        # # Label(self.root, text="Log Output").grid(row=0, column=0, sticky=W)
+        # self.scrollbar = Scrollbar(self.root)
+        # self.log_text_frame = Text(self.root)
+        # self.line_number = 1
+        # # self.scrollbar.grid(row=0, column=0, sticky=W)
+        # self.log_text_frame.grid(row=0, column=0, sticky=N)
         
-        ## Config scrollbar for logging window
-        self.scrollbar.config(command=self.log_text_frame.yview)
-        self.log_text_frame.config(yscrollcommand=self.scrollbar.set)
+        # ## Config scrollbar for logging window
+        # self.scrollbar.config(command=self.log_text_frame.yview)
+        # self.log_text_frame.config(yscrollcommand=self.scrollbar.set)
 
-        # ## Information Window
-        self.info_text_frame = Text(self.root)
-        self.info_text_frame.grid(row=1, column=0)
-        self.info_text = "\
-        Welcome to Facegate!\n\
-        Peter Kydas - s3485580\n\
-        Daniel Sosa Haby - s3486824\n\
-        Marcela Klocker - s3487194"
+        # # ## Information Window
+        # self.info_text_frame = Text(self.root)
+        # self.info_text_frame.grid(row=1, column=0)
+        # self.info_text = "\
+        # Welcome to Facegate!\n\
+        # Peter Kydas - s3485580\n\
+        # Daniel Sosa Haby - s3486824\n\
+        # Marcela Klocker - s3487194"
 
-        self.info_text_frame.insert(END, self.info_text)
+        # self.info_text_frame.insert(END, self.info_text)
 
         # Canvas Window
-        self.canvas = Canvas(self.root, bg="white", height=480, width=320)
-        self.canvas.grid(row=0, column=2, rowspan=3, sticky=N)
+        self.canvas = Canvas(self.root, bg="white", height=480, width=640)
+        self.canvas.grid(row=0, column=1, rowspan=3, sticky=N)
         # x1, y1, x2, y2 - top left to bottom right
         # self.canvas_size = self.canvas.bbox(None)
         # print (self.canvas_size)
@@ -112,13 +112,14 @@ class WindowManager():
         self.tkimg = ImageTk.PhotoImage(self.im)
         # self.tkimg = PhotoImage(file="./numbered.jpg")
         self.imglabel = Label(self.root, image=self.tkimg)
-        self.imglabel.grid(row=0, column=1,rowspan=3,  sticky=E)
+        self.imglabel.grid(row=0, column=0,rowspan=3,  sticky=N)
+        # self.imglabel.grid(row=0, column=0)
 
         ## Configure column weights
-        self.root.grid_columnconfigure(0, weight=4)
-        self.root.grid_columnconfigure(1, weight=1)
+        # self.root.grid_columnconfigure(0, weight=4)
+        # self.root.grid_columnconfigure(1, weight=1)
         self.root.grid_rowconfigure(0, weight=1)
-        self.root.grid_rowconfigure(1, weight=7)
+        # self.root.grid_rowconfigure(1, weight=7)
         # self.root.grid_rowconfigure(2, weight=25)
 
         self._stop_event = False
@@ -126,11 +127,12 @@ class WindowManager():
 
 
     def print(self, text):
-        self.log_text_frame.insert(END, str(self.line_number) +": ")
-        self.log_text_frame.insert(END, text+"\n") 
-        self.log_text_frame.see("end")
+        pass
+        # self.log_text_frame.insert(END, str(self.line_number) +": ")
+        # self.log_text_frame.insert(END, text+"\n") 
+        # self.log_text_frame.see("end")
 
-        self.line_number += 1
+        # self.line_number += 1
     
     def update_image(self, img):
         # im = Image.open(img)
