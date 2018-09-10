@@ -1,7 +1,7 @@
 #Import rendering window 
 import tkinter
-# from WindowManager import WindowManager
-from WindowManagerTwo import WindowManager 
+from WindowManager import WindowManager
+# from WindowManagerTwo import WindowManager 
 
 
 # Import custom modules 
@@ -9,6 +9,7 @@ from modules.input import FacialDetection
 from modules.classifier import FaceClassifier
 from modules.hardware import Arduino
 from modules.hardware import FaceSimulation
+from modules.hardware import ArmSimulation
 
 
 if __name__ == '__main__':
@@ -16,7 +17,8 @@ if __name__ == '__main__':
     inputDevice = FacialDetection.FacialDetection()
     classifier = FaceClassifier.FaceClassifier()
     # hardware = Arduino.Arduino()
-    hardware = FaceSimulation.FaceSimulation()
+    # hardware = FaceSimulation.FaceSimulation()
+    hardware = ArmSimulation.ArmSimulation()
 
 
     inputDevice.init()

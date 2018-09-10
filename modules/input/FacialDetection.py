@@ -88,14 +88,14 @@ class FacialDetection(InputAbstractClass):
         deadZoneColour = (255, 0, 0)
 
 
-        cv2.line(img, (pointX,0), (pointX,height), colour, strokeWidth)
-        cv2.line(img, (0, pointY), (width, pointY), colour, strokeWidth)
+        cv2.line(img, (pointX,0), (pointX, self.height), colour, strokeWidth)
+        cv2.line(img, (0, pointY), (self.width, pointY), colour, strokeWidth)
 
-        cv2.line(img, (self.deadZoneLeft,0), (self.deadZoneLeft,height), deadZoneColour, strokeWidth)
-        cv2.line(img, (self.deadZoneRight,0), (self.deadZoneRight,height), deadZoneColour, strokeWidth)
+        cv2.line(img, (self.deadZoneLeft,0), (self.deadZoneLeft, self.height), deadZoneColour, strokeWidth)
+        cv2.line(img, (self.deadZoneRight,0), (self.deadZoneRight, self.height), deadZoneColour, strokeWidth)
 
-        cv2.line(img, (0,self.deadZoneUp), (width,self.deadZoneUp), deadZoneColour, strokeWidth)
-        cv2.line(img, (0,self.deadZoneDown), (width,self.deadZoneDown), deadZoneColour, strokeWidth)
+        cv2.line(img, (0,self.deadZoneUp), (self.width,self.deadZoneUp), deadZoneColour, strokeWidth)
+        cv2.line(img, (0,self.deadZoneDown), (self.width,self.deadZoneDown), deadZoneColour, strokeWidth)
 
         return img
 
@@ -106,13 +106,13 @@ class FacialDetection(InputAbstractClass):
         dy = 30
 
         cv2.putText(img,"Actions:", (x,y), cv2.FONT_HERSHEY_SIMPLEX,
-                     1, (0, 0, 255), 1)
+                    1, (0, 0, 255), 1)
 
         for key, value in self.actions.items():
             if (value):
                 count += 1
                 cv2.putText(img, str(key), (x,y + (dy*count)), cv2.FONT_HERSHEY_SIMPLEX,
-                     1, (255, 0, 255), 1)
+                            1, (255, 0, 255), 1)
         return img
 
     def init(self):
@@ -164,7 +164,7 @@ class FacialDetection(InputAbstractClass):
         # print ("Facial Detection!")
         try:
             # Set VideoCapture card number here (2 works on my machine)
-            self.cap = cv2.VideoCapture(2)
+            self.cap = cv2.VideoCapture(0)
             self.open_camera = False
         except:
             print ("Cannot open VideoCamera! Make sure you have the right one set in FacialDetection.py")
@@ -215,7 +215,7 @@ class FacialDetection(InputAbstractClass):
                 #cv2.polylines(frame, [ptsNp], False, (0,255,0))
                 self.frame = self.paintDaFaceBro(self.frame, pts)
                 if (self.paintDebug):
-                    self.frame = paintDebugLines(self.frame, pts)
+                    self.frame = self.paintDebugLines(self.frame, pts)
                 
                 self.recogniseActions(self.frame, pts)
                 self.frame = self.displayActions(self.frame)
@@ -254,7 +254,10 @@ class FacialDetection(InputAbstractClass):
         # pass
 
     def keyboard(self, key):
-        self.window.print("Got key in face rec: " + key)
+        # self.window.print("Got key in face rec: " + key)
+        if (key == 'd'):
+            self.paintDebug = not self.paintDebug
+            self.window.print("Debug mode now: " + str(self.paintDebug))
 
     def mouse_click(self, x, y):
         pass

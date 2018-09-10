@@ -11,12 +11,15 @@ Requires Python >=3.4
 * Pillow - Imaging library to display images
 * pyserial - Connecting to the Arduino
 
+### From apt-get
+* python3-pil.imagetk
+
 ### Neural Network Test
 * tensorflow
 * tflearn (simplifies tensorflow)
 
 ### Needed library modules
-pystasm requires the OpenCV source code to be installed on your system
+pystasm requires the OpenCV source code to be installed on your system. There is a script here to install it.
 
 ## Doing Your Work
 

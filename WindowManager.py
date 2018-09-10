@@ -65,8 +65,8 @@ class WindowManager():
         ## Basic configuration for window
         self.root.title("Facegate")
         # self.root.geometry("640x480")
-        self.root.geometry("1280x480")
-        # self.root.geometry("1920x480")
+        # self.root.geometry("1280x480")
+        self.root.geometry("1920x480")
 
         self.root.configure(background = "white")
 
@@ -98,7 +98,7 @@ class WindowManager():
         self.info_text_frame.insert(END, self.info_text)
 
         # Canvas Window
-        self.canvas = Canvas(self.root, bg="white", height=480, width=320)
+        self.canvas = Canvas(self.root, bg="white", height=480, width=640)
         self.canvas.grid(row=0, column=2, rowspan=2)
         # x1, y1, x2, y2 - top left to bottom right
         # self.canvas_size = self.canvas.bbox(None)
@@ -110,13 +110,17 @@ class WindowManager():
         self.im = Image.open('numbered.jpg')
         # self.im = self.im.resize((int(480*0.66), int(640*0.66)), Image.ANTIALIAS)
         self.tkimg = ImageTk.PhotoImage(self.im)
+        # self.tkimg = tk.PhotoImage(self.im)
+        # self.tkimg = self.im
+
         # self.tkimg = PhotoImage(file="./numbered.jpg")
         self.imglabel = Label(self.root, image=self.tkimg)
         self.imglabel.grid(row=0, column=1,rowspan=3,  sticky=E)
 
         ## Configure column weights
-        self.root.grid_columnconfigure(0, weight=4)
-        self.root.grid_columnconfigure(1, weight=1)
+        self.root.grid_columnconfigure(0, weight=8)
+        self.root.grid_columnconfigure(1, weight=0)
+        self.root.grid_columnconfigure(2, weight=1)
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_rowconfigure(1, weight=7)
         # self.root.grid_rowconfigure(2, weight=25)
@@ -136,7 +140,10 @@ class WindowManager():
         # im = Image.open(img)
         # self.tkimg = ImageTk.PhotoImage(img)
         # print (type(self.imglabel))
+        
         tkimg = ImageTk.PhotoImage(img)
+        # tkimg = img
+
         self.imglabel.configure(image=tkimg)
         self.imglabel.image = tkimg
 
