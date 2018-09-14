@@ -10,6 +10,8 @@ Requires Python >=3.4
 * pystasm - openStasm bindings for Python. Requires OpenCV source
 * Pillow - Imaging library to display images
 * pyserial - Connecting to the Arduino
+* olimex-ekg-emg
+* matplotlib
 
 ### From apt-get
 * python3-pil.imagetk
