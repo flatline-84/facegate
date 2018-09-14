@@ -2,3 +2,7 @@
 modules/*/__pycache__/*py[cod]
 __pycache__
 OpenCV/
+out/
+.idea/
+.DS_Store
+.vscode
