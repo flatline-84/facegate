@@ -13,6 +13,8 @@ Requires Python >=3.4
 * olimex-ekg-emg
 * matplotlib
 
+python3 olimex_test.py -p /dev/ttyUSB0
+
 ### From apt-get
 * python3-pil.imagetk
 
