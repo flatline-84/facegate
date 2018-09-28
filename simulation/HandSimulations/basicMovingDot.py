@@ -2,10 +2,10 @@ from matplotlib import pyplot as plt
 from matplotlib import animation
 
 
-up = False
+forward = False
 right = False
 left = False
-down = False
+backward = False
 rightup = False
 rightdown = False
 
@@ -18,14 +18,14 @@ def simData():
     global x
     global y
 
-    if up:
+    if forward:
         y += 1
         if right:
             x += 1
         if left:
             x -= 1
         yield x, y
-    elif down:
+    elif backward:
         y -= 1
         if right:
             x += 1
@@ -51,10 +51,10 @@ def simPoints(simData):
 
 def press(event):
     if event.key == 'up':
-        global up
+        global forward
         up = True
     if event.key == 'down':
-        global down
+        global backward
         down = True
     if event.key == 'right':
         global right
@@ -66,10 +66,10 @@ def press(event):
 
 def release(event):
     if event.key == 'up':
-        global up
+        global forward
         up = False
     if event.key == 'down':
-        global down
+        global backward
         down = False
     if event.key == 'right':
         global right
