@@ -10,8 +10,11 @@ Requires Python >=3.4
 * pystasm - openStasm bindings for Python. Requires OpenCV source
 * Pillow - Imaging library to display images
 * pyserial - Connecting to the Arduino
-* olimex-ekg-emg
-* matplotlib
+* olimex-ekg-emg - EMG library
+* matplotlib - For graphing
+* PyOpenGL - Arm simulation
+* PyOpenGL_accelerate - Arm Simulation
+* pygame
 
 python3 olimex_test.py -p /dev/ttyUSB0
 
