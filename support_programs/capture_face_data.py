@@ -103,7 +103,7 @@ if __name__ == '__main__':
     ## Basic configuration for window
     root.title("DCNN Face Maker")
     # root.geometry("640x480")
-    root.geometry("640x520")
+    root.geometry("768x616")
     # root.geometry("1280x480")
     # self.root.geometry("1920x480")
 
@@ -151,6 +151,7 @@ if __name__ == '__main__':
         if ret == True:
             # frame = cv2.flip(frame, 1)
             # cv2.imshow('image', frame)
+            frame = cv2.resize(frame, (768, 576)) 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             # im = frame
 

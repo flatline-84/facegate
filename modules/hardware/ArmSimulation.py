@@ -46,8 +46,6 @@ class ArmComponent():
 
         self.calculate_vertices()
 
-
-
     def calculate_vertices(self):
 
         angle = math.radians(self.rotation)
