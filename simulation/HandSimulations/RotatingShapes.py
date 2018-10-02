@@ -56,7 +56,7 @@ def simData():
 
     elif backward:
         squarexyz[1] = [x - 1 for x in squarexyz[1]]
-        centerxyz[1] = centerxyz[1] + 1
+        centerxyz[1] = centerxyz[1] - 1
 
         if right:
             squarexyz[0] = [x + 1 for x in squarexyz[0]]
@@ -229,6 +229,9 @@ ax = fig.add_subplot(111, projection='3d')
 ax.set_xlim(0, 100)
 ax.set_ylim(0, 100)
 ax.set_zlim(0, 100)
+ax.set_xlabel('X axis')
+ax.set_ylabel('Y axis')
+ax.set_zlabel('Z axis')
 
 ax.set_axis_on()
 scat, = plt.plot(squarex, squarey, squarez, '-bo', ms=10)
