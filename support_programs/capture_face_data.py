@@ -149,8 +149,9 @@ if __name__ == '__main__':
         ret, frame = cap.read()
 
         if ret == True:
-            frame = cv2.flip(frame, 1)
+            # frame = cv2.flip(frame, 1)
             # cv2.imshow('image', frame)
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             # im = frame
 
             frame = frame[...,::-1]
