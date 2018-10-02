@@ -1,6 +1,8 @@
 from matplotlib import pyplot as plt
 from matplotlib import animation
 import mpl_toolkits.mplot3d.axes3d as p3
+import math
+import numpy as np
 
 
 forward = False
@@ -11,52 +13,74 @@ rightforward = False
 rightbackward = False
 up = False
 down = False
+rotaterightx = False
 
-squarex = [2, 2, 4, 4, 2]
-squarey = [2, 4, 4, 2, 2]
-squarez = [0, 0, 0, 0, 0]
+squarex = np.array([2, 2, 4, 4, 2])
+squarey = np.array([2, 4, 4, 2, 2])
+squarez = np.array([0, 0, 0, 0, 0])
+squarexyz = np.array([squarex, squarey, squarez])
+centerxyz = np.array([[3], [2], [0]])
+print (centerxyz)
 
-
+theta = 0
+rotational_array_x = [[1, 0, 0],
+                      [0, math.cos(theta), -math.sin(theta)],
+                      [0, math.sin(theta), math.cos(theta)]]
 def simData():
-    global squarex
-    global squarey
-    global squarez
+    global squarexyz
+    global centerxyz
+    global rotational_array_x
+    global theta
 
     if forward:
-        squarey = [x + 1 for x in squarey]
+        squarexyz[1] = [x + 1 for x in squarexyz[1]]
         if right:
-            squarex = [x + 1 for x in squarex]
+            squarexyz[0] = [x + 1 for x in squarexyz[0]]
         if left:
-            squarex = [x - 1 for x in squarex]
-        yield squarex, squarey, squarez
+            squarexyz[0] = [x - 1 for x in squarexyz[0]]
+        yield squarexyz
 
     elif backward:
-        squarey = [x - 1 for x in squarey]
+        squarexyz[1] = [x - 1 for x in squarexyz[1]]
 
         if right:
-            squarex = [x + 1 for x in squarex]
+            squarexyz[0] = [x + 1 for x in squarexyz[0]]
 
         if left:
-            squarex = [x - 1 for x in squarex]
+            squarexyz[0] = [x - 1 for x in squarexyz[0]]
 
-        yield squarex, squarey, squarez
+        yield squarexyz
     elif right:
-        squarex = [x + 1 for x in squarex]
+        squarexyz[0] = [x + 1 for x in squarexyz[0]]
 
-        yield squarex, squarey, squarez
+        yield squarexyz
     elif left:
-        squarex = [x - 1 for x in squarex]
-        yield squarex, squarey, squarez
+        squarexyz[0] = [x - 1 for x in squarexyz[0]]
+        yield squarexyz
     elif up:
         print ("UP")
-        squarez = [x + 1 for x in squarez]
-        yield squarex, squarey, squarez
+        squarexyz[2] = [x + 1 for x in squarexyz[2]]
+        yield squarexyz
+
     elif down:
         print ("DOWN")
-        squarez = [x - 1 for x in squarez]
-        yield squarex, squarey,squarez
+        squarexyz[2] = [x - 1 for x in squarexyz[2]]
+        yield squarexyz
+
+    elif rotaterightx:
+
+        theta = theta + math.pi / 1000
+        rotational_array_x = [[1, 0, 0],
+                              [0, math.cos(theta), -math.sin(theta)],
+                              [0, math.sin(theta), math.cos(theta)]]
+
+        squarexyz = np.subtract(squarexyz, centerxyz)
+        squarexyz = np.dot(rotational_array_x, squarexyz)
+        squarexyz = np.add(squarexyz, centerxyz)
+
+        yield squarexyz
     else:
-        yield squarex, squarey, squarez
+        yield squarexyz
 
 def simPoints(simData):
     squarex, squarey, squarez = simData[0], simData[1], simData[2]
@@ -88,7 +112,9 @@ def press(event):
     if event.key == 'x':
         global down
         down = True
-
+    if event.key == 'u':
+        global rotaterightx
+        rotaterightx = True
 
 
 def release(event):
@@ -110,6 +136,10 @@ def release(event):
     if event.key == 'x':
         global down
         down = False
+    if event.key == 'u':
+        global rotaterightx
+        rotaterightx = False
+
 
 
 
@@ -119,7 +149,7 @@ ax = fig.add_subplot(111, projection='3d')
 ax.set_xlim(0, 25)
 ax.set_ylim(0, 25)
 ax.set_zlim(0, 25)
-
+ax.set_axis_on()
 scat, = plt.plot(squarex, squarey, squarez, '-bo', ms=10)
 
 fig.canvas.mpl_connect('key_press_event', press)
