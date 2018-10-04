@@ -21,6 +21,7 @@ out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
 name = None
 im = None 
 
+
 # Tkinter functions
 def callback():
     root.quit()
@@ -151,7 +152,7 @@ if __name__ == '__main__':
         if ret == True:
             # frame = cv2.flip(frame, 1)
             # cv2.imshow('image', frame)
-            frame = cv2.resize(frame, (768, 576)) 
+            # frame = cv2.resize(frame, (768, 576)) 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             # im = frame
 
