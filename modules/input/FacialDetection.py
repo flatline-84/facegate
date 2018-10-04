@@ -221,12 +221,12 @@ class FacialDetection(InputAbstractClass):
                 self.frame = self.displayActions(self.frame)
 
 
-                for i in range(0, len(pts)):
-                    # print("i: ",i, " - ", pts[i][0], " , ", pts[i][1])
-                    # cv2.putText(frame, str(i), (pts[i][0], pts[i][1]), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0,255,0), 1, cv2.LINE_AA)
+                # for i in range(0, len(pts)):
+                #     # print("i: ",i, " - ", pts[i][0], " , ", pts[i][1])
+                #     # cv2.putText(frame, str(i), (pts[i][0], pts[i][1]), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0,255,0), 1, cv2.LINE_AA)
 
-                    # frame[int(round(point[1]))][int(round(point[0]))] = (0,255,0)
-                    continue
+                #     # frame[int(round(point[1]))][int(round(point[0]))] = (0,255,0)
+                #     continue
 
             # Image is ready for use
             # cv2.imshow("STASM", frame)

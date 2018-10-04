@@ -8,8 +8,16 @@ from PIL import Image, ImageTk
 import sys
 import os
 
+import os
+from PIL import Image
+import operator
+from functools import reduce
+
 # Increment this value if your webcam does not work
 _WEBCAM = 0
+_SIZE = 350
+
+_EQUALIZER = False
 
 # Program running
 running = True
@@ -78,6 +86,28 @@ def QuitCallback():
     global running
     running = False
 
+def EqualCallback():
+    global _EQUALIZER
+    _EQUALIZER = not _EQUALIZER
+
+
+def equalize(h):
+    
+    lut = []
+
+    for b in range(0, len(h), 256):
+
+        # step size
+        step = reduce(operator.add, h[b:b+256]) / 255
+
+        # create equalization lookup table
+        n = 0
+        for i in range(256):
+            lut.append(n / step)
+            n = n + h[i+b]
+
+    return lut
+
 if __name__ == '__main__':
 
     # Get user's name before running the program
@@ -118,7 +148,7 @@ if __name__ == '__main__':
     tkimg = ImageTk.PhotoImage(im)
     # self.tkimg = PhotoImage(file="./numbered.jpg")
     imglabel = Label(root, image=tkimg)
-    imglabel.grid(row=0, column=0, columnspan=5, sticky=N)
+    imglabel.grid(row=0, column=0, columnspan=6, sticky=N)
 
     ## Setup the buttons
     button_Anger = tk.Button(root, text='Anger', command = AngerCallback)
@@ -136,8 +166,19 @@ if __name__ == '__main__':
     button_Quit = tk.Button(root, text='Quit', command = QuitCallback)
     button_Quit.grid(row=1, column=4)
 
+    button_Equal = tk.Button(root, text='EQUAL', command = EqualCallback)
+    button_Equal.grid(row=1, column=5)
+
     # Initialize webcam 
     cap = cv2.VideoCapture(_WEBCAM)
+
+    # Initialize Face Cascade
+    try:
+        faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+        print("Loaded the face cascade")
+    except:
+        print("Can't find face cascade file. Please make sure there is a file called 'haarcascade_frontalface_default.xml' in this directory")
+        exit(1)
 
     print("Press 'q' to quit the program...")
 
@@ -149,19 +190,74 @@ if __name__ == '__main__':
         ret, frame = cap.read()
 
         if ret == True:
-            # frame = cv2.flip(frame, 1)
+            frame = cv2.flip(frame, 1)
             # cv2.imshow('image', frame)
-            frame = cv2.resize(frame, (768, 576)) 
+            # frame = cv2.resize(frame, (768, 576)) 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             # im = frame
 
-            frame = frame[...,::-1]
-            image = Image.fromarray(frame)
+            faces = faceCascade.detectMultiScale(frame,
+                                                scaleFactor=1.2,
+                                                minNeighbors=8,
+                                                minSize=(50,50),
+                                                flags=cv2.CASCADE_SCALE_IMAGE
+                                                )
 
-            im = image
+            # # Draw the rectangle
+            # for (x, y, w, h) in faces:
+            #     # mid_point_x = x + (w/2)
+            #     # mid_point_y = y + (h/2)
+            #     # scale_factor = (_SIZE / w)
+            #     # w = int(w * scale_factor)
+            #     # h = int(h * scale_factor)
 
+            #     # x = int(mid_point_x - (w / 2))
+            #     # y = int(mid_point_y - (h / 2))
+
+            #     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            #     # print ("Size: ", w, h)
+
+
+            # Needed to save the file
+            # im = frame            
+
+            for (x, y, w, h) in faces:
+
+                # Get original size of face
+                # im = np.array(image)
+                # print(im)
+                im = frame[y:(y+h), x:(x+w)]
+
+                # mid_point_x = x + (w/2)
+                # mid_point_y = y + (h/2)
+                
+                # scale_factor = (_SIZE / w)
+                
+                im = Image.fromarray(im).resize((_SIZE, _SIZE))
+                
+                # w = int(w * scale_factor)
+                # h = int(h * scale_factor)
+
+                # x = int(mid_point_x - (w / 2))
+                # y = int(mid_point_y - (h / 2))
+                            #y, x
+                # Resize face here
+            
+            # frame = frame[...,::-1]
+            # image = Image.fromarray(frame)
+            image = im
+            
+
+            if(_EQUALIZER):
+                # calculate lookup table
+                lut = equalize(image.histogram())
+                # map image through lookup table
+                image = image.point(lut)
+
+            # im = image
             tkimg = ImageTk.PhotoImage(image)
-                    
+            # tkimg = ImageTk.PhotoImage(im)
+
             imglabel.configure(image=tkimg)
             imglabel.image = tkimg
 
