@@ -19,7 +19,7 @@ Requires Python >=3.4
 * torch
 * torchvision
 * onnx
-* caffe2
+* onnx-tf
 
 python3 olimex_test.py -p /dev/ttyUSB0
 
