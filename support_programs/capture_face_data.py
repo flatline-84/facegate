@@ -246,14 +246,13 @@ if __name__ == '__main__':
             
             # frame = frame[...,::-1]
             # image = Image.fromarray(frame)
-            image = im
-            
-
             if(_EQUALIZER):
                 # calculate lookup table
-                lut = equalize(image.histogram())
+                lut = equalize(im.histogram())
                 # map image through lookup table
-                image = image.point(lut)
+                im = im.point(lut)
+
+            image = im
 
             # im = image
             tkimg = ImageTk.PhotoImage(image)
