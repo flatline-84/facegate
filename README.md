@@ -4,7 +4,7 @@ FaceGate is a novel program to classify actions from a variety of input sources 
 Requires Python >=3.4
 
 ## Required Python libraries
-### Can be installed with `pip`
+### Can be installed with `sudo pip3 install [xxx]`
 * numpy - math calculations and data handling
 * opencv-python - openCV bindings for Python
 * pystasm - openStasm bindings for Python. Requires OpenCV source
@@ -19,7 +19,9 @@ Requires Python >=3.4
 * torch
 * torchvision
 * onnx
+* tensorflow
 * onnx-tf
+
 
 python3 olimex_test.py -p /dev/ttyUSB0
 

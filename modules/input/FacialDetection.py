@@ -58,11 +58,19 @@ class FacialDetection(InputAbstractClass):
             self.actions["MouthOpen"] = True
 
 
-    def drawOutlines(self, img, pts, color):
+    def drawOutlines(self, img, pts, colour):
         for k in self.Face.keys():
             ptsNp = self.convertArrayToNumpy(pts[self.Face[k][0]:self.Face[k][-1]])
-            cv2.polylines(img, [ptsNp], True, color)
+            cv2.polylines(img, [ptsNp], True, colour)
 
+        return img
+
+    def drawPoints(self, img, pts, colour):
+        for p in pts:
+            x = p[0]
+            y = p[1]
+            cv2.circle(img, (x,y), 2, colour)
+        
         return img
 
     def paintDaFaceBro(self, img, pts):
@@ -73,7 +81,8 @@ class FacialDetection(InputAbstractClass):
         # cv2.line(img, tuple(ptsEye1), tuple(ptsEye2), (0,0,255), 3)
         # cv2.circle(img, tuple(ptsNp), 3, (0,0,255), -1)
 
-        return self.drawOutlines(img, pts, (0,255,0))
+        # return self.drawOutlines(img, pts, (0,255,0))
+        return self.drawPoints(img, pts, (0,255,0))
 
     def paintDebugLines(self, img, pts):
 
@@ -97,6 +106,8 @@ class FacialDetection(InputAbstractClass):
         cv2.line(img, (0,self.deadZoneUp), (self.width,self.deadZoneUp), deadZoneColour, strokeWidth)
         cv2.line(img, (0,self.deadZoneDown), (self.width,self.deadZoneDown), deadZoneColour, strokeWidth)
 
+        # print("Should be drawing debug lines?")
+
         return img
 
     def displayActions(self, img):
@@ -106,13 +117,13 @@ class FacialDetection(InputAbstractClass):
         dy = 30
 
         cv2.putText(img,"Actions:", (x,y), cv2.FONT_HERSHEY_SIMPLEX,
-                    1, (0, 0, 255), 1)
+                    1, (0, 0, 255), 3)
 
         for key, value in self.actions.items():
             if (value):
                 count += 1
                 cv2.putText(img, str(key), (x,y + (dy*count)), cv2.FONT_HERSHEY_SIMPLEX,
-                            1, (255, 0, 255), 1)
+                            1, (255, 0, 255), 2)
         return img
 
     def init(self):

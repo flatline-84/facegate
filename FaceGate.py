@@ -17,8 +17,8 @@ if __name__ == '__main__':
     inputDevice = FacialDetection.FacialDetection()
     classifier = FaceClassifier.FaceClassifier()
     # hardware = Arduino.Arduino()
-    # hardware = FaceSimulation.FaceSimulation()
-    hardware = ArmSimulation.ArmSimulation()
+    hardware = FaceSimulation.FaceSimulation()
+    # hardware = ArmSimulation.ArmSimulation()
 
 
     inputDevice.init()
