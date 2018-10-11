@@ -40,14 +40,7 @@ def simPoints(simData):
         xCoordinates = np.append(xCoordinates, (i[0][0], i[1][0]))
         yCoordinates = np.append(yCoordinates, (i[0][1], i[1][1]))
         zCoordinates = np.append(zCoordinates, (i[0][2], i[1][2]))
-    # for i in armMiddle:
-    #     xCoordinates = np.append(xCoordinates, i[0])
-    #     yCoordinates = np.append(yCoordinates, i[1])
-    #     zCoordinates = np.append(zCoordinates, i[2])
-    # for i in armUpper:
-    #     xCoordinates = np.append(xCoordinates, i[0])
-    #     yCoordinates = np.append(yCoordinates, i[1])
-    #     zCoordinates = np.append(zCoordinates, i[2])
+
     scat.set_data(xCoordinates, yCoordinates)
     scat.set_3d_properties(zCoordinates)
     return scat,

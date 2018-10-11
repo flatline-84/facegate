@@ -27,13 +27,32 @@ centerxyz = np.array([[21], [2], [0]])
 
 
 theta = 0
-rotational_array_x = [[1, 0, 0],
-                      [0, math.cos(theta), -math.sin(theta)],
-                      [0, math.sin(theta), math.cos(theta)]]
+z_axis_rotation_angle = 0
+# rotational_array_x = [[1, 0, 0],
+#                       [0, math.cos(theta), -math.sin(theta)],
+#                       [0, math.sin(theta), math.cos(theta)]]
+#
+# rotational_array_z = [[math.cos(theta), -math.sin(theta), 0],
+#                       [math.sin(theta), math.cos(theta), 0],
+#                       [0, 0, 1]]
 
-rotational_array_z = [[math.cos(theta), -math.sin(theta), 0],
-                      [math.sin(theta), math.cos(theta), 0],
-                      [0, 0, 1]]
+ux = 0
+uy = 0
+uz = 1
+
+uxlr = 1
+uylr = 0
+uzlr = 0
+
+rotation_axis = [ux, uy, uz] # sets x as default initial axis
+
+direction = math.pi/2
+
+def create_rotation_matrix(ux, uy, uz, theta):
+    rotation_matrix = [[math.cos(theta)+ux*ux*(1-math.cos(theta)), ux*uy*(1-math.cos(theta))-uz*math.sin(theta), ux*uz*(1-math.cos(theta))+uy*math.sin(theta)],
+                       [uy*ux*(1-math.cos(theta))+uz*math.sin(theta), math.cos(theta)+uy*uy*(1-math.cos(theta)), uy*uz*(1-math.cos(theta))-ux*math.sin(theta)],
+                       [uz*ux*(1-math.cos(theta))-uy*math.sin(theta), uz*uy*(1-math.cos(theta))+ux*math.sin(theta), math.cos(theta) + uz*uz*(1-math.cos(theta))]]
+    return rotation_matrix
 
 def simData():
     global squarexyz
@@ -42,6 +61,11 @@ def simData():
     global rotateleftx
     global rotational_array_x
     global rotational_array_z
+    global z_axis_rotation_angle
+    global direction
+    global uxlr
+    global uylr
+    global uzlr
 
     if forward:
         squarexyz[1] = [x + 1 for x in squarexyz[1]]
@@ -90,13 +114,16 @@ def simData():
 
     elif rotaterightx:
         theta = math.pi / 100
-        print (theta)
-        rotational_array_x = [[1, 0, 0],
-                              [0, math.cos(theta), -math.sin(theta)],
-                              [0, math.sin(theta), math.cos(theta)]]
+        direction = direction - theta
+        ux = 0
+        uy = 0
+        uz = 1
+
+        rotation_axis = [ux, uy, uz]  # sets x as default initial axis
+        rotation_matrix = create_rotation_matrix(ux,uy,uz, theta)
 
         squarexyz = np.subtract(squarexyz, centerxyz)
-        squarexyz = np.dot(rotational_array_x, squarexyz)
+        squarexyz = np.dot(rotation_matrix, squarexyz)
         squarexyz = np.add(squarexyz, centerxyz)
 
         yield squarexyz
@@ -105,39 +132,46 @@ def simData():
     elif rotateleftx:
 
         theta = -math.pi / 100
-        print (theta)
-        rotational_array_x = [[1, 0, 0],
-                              [0, math.cos(theta), -math.sin(theta)],
-                              [0, math.sin(theta), math.cos(theta)]]
+        direction = direction - theta
+        ux = 0
+        uy = 0
+        uz = 1
+        rotation_axis = [ux, uy, uz]  # sets x as default initial axis
+
+        rotation_matrix = create_rotation_matrix(ux,uy,uz, theta)
 
         squarexyz = np.subtract(squarexyz, centerxyz)
-        squarexyz = np.dot(rotational_array_x, squarexyz)
+        squarexyz = np.dot(rotation_matrix, squarexyz)
         squarexyz = np.add(squarexyz, centerxyz)
+
         yield squarexyz
 
     elif rotateup:
         theta = math.pi / 100
-        print (theta)
 
-        rotational_array_z = [[math.cos(theta), -math.sin(theta), 0],
-                              [math.sin(theta), math.cos(theta), 0],
-                              [0, 0, 1]]
+        uxlr = math.sin(direction)
+        uylr = math.cos(direction)
+        uzlr = 0
+
+        rotation_matrix = create_rotation_matrix(uxlr,uylr,uzlr, theta)
+
 
         squarexyz = np.subtract(squarexyz, centerxyz)
-        squarexyz = np.dot(rotational_array_z, squarexyz)
+        squarexyz = np.dot(rotation_matrix, squarexyz)
         squarexyz = np.add(squarexyz, centerxyz)
         yield squarexyz
 
     elif rotatedown:
-        theta = -theta - math.pi / 100
-        print(theta)
+        theta = -math.pi / 100
 
-        rotational_array_z = [[math.cos(theta), -math.sin(theta), 0],
-                              [math.sin(theta), math.cos(theta), 0],
-                              [0, 0, 1]]
+        uxlr = math.sin(direction)
+        uylr = math.cos(direction)
+        uzlr = 0
+
+        rotation_matrix = create_rotation_matrix(uxlr, uylr, uzlr, theta)
 
         squarexyz = np.subtract(squarexyz, centerxyz)
-        squarexyz = np.dot(rotational_array_z, squarexyz)
+        squarexyz = np.dot(rotation_matrix, squarexyz)
         squarexyz = np.add(squarexyz, centerxyz)
 
         yield squarexyz
