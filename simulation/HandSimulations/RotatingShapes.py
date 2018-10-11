@@ -79,12 +79,13 @@ def simData():
     elif up:
         print ("UP")
         squarexyz[2] = [x + 1 for x in squarexyz[2]]
+        centerxyz[2] = centerxyz[2] + 1
         yield squarexyz
 
     elif down:
         print ("DOWN")
         squarexyz[2] = [x - 1 for x in squarexyz[2]]
-        centerxyz[2] = centerxyz[2] + 1
+        centerxyz[2] = centerxyz[2] - 1
         yield squarexyz
 
     elif rotaterightx:
