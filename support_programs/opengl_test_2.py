@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import math
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -45,7 +46,41 @@ class Wireframe:
             node.x = centre_x + scale * (node.x - centre_x)
             node.y = centre_y + scale * (node.y - centre_y)
             node.z *= scale
+    def rotateZ(self, cx,cy,cz, radians):        
+        for node in self.nodes:
+            x      = node.x - cx
+            y      = node.y - cy
+            d      = math.hypot(y, x)
+            theta  = math.atan2(y, x) + radians
+            node.x = cx + d * math.cos(theta)
+            node.y = cy + d * math.sin(theta)
+    def rotateX(self, cx,cy,cz, radians):
+        for node in self.nodes:
+            y      = node.y - cy
+            z      = node.z - cz
+            d      = math.hypot(y, z)
+            theta  = math.atan2(y, z) + radians
+            node.z = cz + d * math.cos(theta)
+            node.y = cy + d * math.sin(theta)
+    def rotateY(self, cx,cy,cz, radians):
+        for node in self.nodes:
+            x      = node.x - cx
+            z      = node.z - cz
+            d      = math.hypot(x, z)
+            theta  = math.atan2(x, z) + radians
+            node.z = cz + d * math.cos(theta)
+            node.x = cx + d * math.sin(theta)
+
+
     """Debugging output"""
+    def findCentre(self):
+        """ Find the centre of the wireframe. """
+        num_nodes = len(self.nodes)
+        meanX = sum([node.x for node in self.nodes]) / num_nodes
+        meanY = sum([node.y for node in self.nodes]) / num_nodes
+        meanZ = sum([node.z for node in self.nodes]) / num_nodes
+        return (meanX, meanY, meanZ)
+
     def outputNodes(self):
         print ("\n --- Nodes --- ")
         for i, node in enumerate(self.nodes):
@@ -77,7 +112,14 @@ class ProjectionViewer:
             pygame.K_DOWN:   (lambda x: x.translateAll('y',  10)),
             pygame.K_UP:     (lambda x: x.translateAll('y', -10)),
             pygame.K_EQUALS: (lambda x: x.scaleAll(1.25)),
-            pygame.K_MINUS:  (lambda x: x.scaleAll( 0.8))}
+            pygame.K_MINUS:  (lambda x: x.scaleAll( 0.8)),
+            pygame.K_q: (lambda x: x.rotateAll('X',  0.1)),
+            pygame.K_w: (lambda x: x.rotateAll('X', -0.1)),
+            pygame.K_a: (lambda x: x.rotateAll('Y',  0.1)),
+            pygame.K_s: (lambda x: x.rotateAll('Y', -0.1)),
+            pygame.K_z: (lambda x: x.rotateAll('Z',  0.1)),
+            pygame.K_x: (lambda x: x.rotateAll('Z', -0.1))
+            }
 
 
     def run(self):
@@ -111,6 +153,13 @@ class ProjectionViewer:
         centre_y = self.height/2
         for wireframe in self.wireframes.values():
             wireframe.scale(centre_x, centre_y, scale)
+    def rotateAll(self, axis, theta):
+        # Rotate all wireframe about their centre, along a given axis by a given angle.
+        rotateFunction = 'rotate' + axis
+        for wireframe in self.wireframes.values():
+            centre = wireframe.findCentre()
+            getattr(wireframe, rotateFunction)(centre, theta)
+
 
     def display(self):
         #Draw the wireframes on the screen.
