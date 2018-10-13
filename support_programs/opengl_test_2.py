@@ -161,8 +161,9 @@ class ProjectionViewer:
     def rotateAll(self, axis, theta):
         # Rotate all wireframe about their centre, along a given axis by a given angle.
         rotateFunction = 'rotate' + axis
+        centre = (320, 240, 320) #centre of window
         for wireframe in self.wireframes.values():
-            centre = wireframe.findCentre()
+            # centre = wireframe.findCentre()
             getattr(wireframe, rotateFunction)(centre, theta)
 
     def display(self):
@@ -178,10 +179,32 @@ class ProjectionViewer:
 
 
 if __name__ == '__main__':
-    cube = Wireframe()
-    cube.addNodes([(x ,y, z) for x in (50, 250) for y in (50, 250) for z in (50, 250)])
-    cube.addEdges([(n,n+4) for n in range(0,4)]+[(n,n+1) for n in range(0,8,2)]+[(n,n+2) for n in (0,1,4,5)])
+    base = Wireframe()
+    base.addNodes([(x ,y, z) for x in (270, 330) for y in (310, 370) for z in (270, 330)])
+    base.addEdges([(n,n+4) for n in range(0,4)]+[(n,n+1) for n in range(0,8,2)]+[(n,n+2) for n in (0,1,4,5)])
 
-    pv = ProjectionViewer(400,300)
-    pv.addWireframe('cube', cube)
+    # shoulder, elbow, wrist, fingers
+    shoulder = Wireframe()
+    shoulder.addNodes([(x ,y, z) for x in (280, 320) for y in (240, 320) for z in (280, 320)])
+    shoulder.addEdges([(n,n+4) for n in range(0,4)]+[(n,n+1) for n in range(0,8,2)]+[(n,n+2) for n in (0,1,4,5)])
+
+    elbow = Wireframe()
+    elbow.addNodes([(x ,y, z) for x in (280, 320) for y in (180, 250) for z in (280, 320)])
+    elbow.addEdges([(n,n+4) for n in range(0,4)]+[(n,n+1) for n in range(0,8,2)]+[(n,n+2) for n in (0,1,4,5)])
+
+    wrist = Wireframe()
+    wrist.addNodes([(x ,y, z) for x in (285, 315) for y in (120, 190) for z in (285, 315)])
+    wrist.addEdges([(n,n+4) for n in range(0,4)]+[(n,n+1) for n in range(0,8,2)]+[(n,n+2) for n in (0,1,4,5)])
+
+    hand = Wireframe()
+    hand.addNodes([(x ,y, z) for x in (260, 340) for y in (100, 125) for z in (290, 310)])
+    hand.addEdges([(n,n+4) for n in range(0,4)]+[(n,n+1) for n in range(0,8,2)]+[(n,n+2) for n in (0,1,4,5)])
+
+    pv = ProjectionViewer(640,480)
+    pv.addWireframe('base', base)
+    pv.addWireframe('shoulder', shoulder)
+    pv.addWireframe('elbow', elbow)
+    pv.addWireframe('wrist', wrist)
+    pv.addWireframe('hand', hand)
+
     pv.run()
