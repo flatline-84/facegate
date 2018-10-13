@@ -6,59 +6,64 @@ import numpy as np
 import time
 
 
-rotateRightX = False
-rotateLeftX = False
-rotateUp = False
-rotateDown = False
+class armSimulation:
+    def __init__(self):
 
-armLower = np.array([[10, 10, 10], [10, 10, 40]])
-armMiddle = np.array([[10, 10, 40], [10, 10, 80]])
-armUpper = np.array([[10, 10, 80], [10, 10, 120]])
 
-xCoordinates = np.array([])
-yCoordinates = np.array([])
-zCoordinates = np.array([])
+        self.rotateRightX = False
+        self.rotateLeftX = False
+        self.rotateUp = False
+        self.rotateDown = False
+
+        self.armLower = np.array([[10, 10, 10], [10, 10, 40]])
+        self.armMiddle = np.array([[10, 10, 40], [10, 10, 80]])
+        self.armUpper = np.array([[10, 10, 80], [10, 10, 120]])
+
+        self.xCoordinates = np.array([])
+        self.yCoordinates = np.array([])
+        self.zCoordinates = np.array([])
+
+        self.fig = plt.figure()
+        self.ax = self.fig.add_subplot(111, projection='3d')
+
+        self.ax.set_xlim(0, 200)
+        self.ax.set_ylim(0, 200)
+        self.ax.set_zlim(0, 200)
+        self.ax.set_xlabel('X axis')
+        self.ax.set_ylabel('Y axis')
+        self.ax.set_zlabel('Z axis')
+
+        self.ax.set_axis_on()
+
+
+
+sim = armSimulation()
+scat, = plt.plot(sim.xCoordinates, sim.yCoordinates, sim.zCoordinates, '-bo', ms=10)
+
 
 def simData():
-    global rotateRightX
-    global rotateLeftX
-    global rotateDown
-    global rotateUp
-    global armLower
-    global armMiddle
-    global armUpper
-
-    yield armLower, armMiddle, armUpper
+    yield sim.armLower, sim.armMiddle, sim.armUpper
 
 def simPoints(simData):
+    global scat
     armLower, armMiddle, armUpper = simData[0], simData[1], simData[2]
-    xCoordinates = np.array([])
-    yCoordinates = np.array([])
-    zCoordinates = np.array([])
+    sim.xCoordinates = np.array([])
+    sim.yCoordinates = np.array([])
+    sim.zCoordinates = np.array([])
 
     for i in armLower, armMiddle, armUpper:
-        xCoordinates = np.append(xCoordinates, (i[0][0], i[1][0]))
-        yCoordinates = np.append(yCoordinates, (i[0][1], i[1][1]))
-        zCoordinates = np.append(zCoordinates, (i[0][2], i[1][2]))
+        sim.xCoordinates = np.append(sim.xCoordinates, (i[0][0], i[1][0]))
+        sim.yCoordinates = np.append(sim.yCoordinates, (i[0][1], i[1][1]))
+        sim.zCoordinates = np.append(sim.zCoordinates, (i[0][2], i[1][2]))
 
-    scat.set_data(xCoordinates, yCoordinates)
-    scat.set_3d_properties(zCoordinates)
+    scat.set_data(sim.xCoordinates, sim.yCoordinates)
+    scat.set_3d_properties(sim.zCoordinates)
     return scat,
 
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-
-ax.set_xlim(0, 200)
-ax.set_ylim(0, 200)
-ax.set_zlim(0, 200)
-ax.set_xlabel('X axis')
-ax.set_ylabel('Y axis')
-ax.set_zlabel('Z axis')
 
 
-ax.set_axis_on()
-scat, = plt.plot(xCoordinates, yCoordinates, zCoordinates, '-bo', ms=10)
-
-ani = animation.FuncAnimation(fig, simPoints, simData, blit=True,
+ani = animation.FuncAnimation(sim.fig, simPoints, simData, blit=True,
                               interval=10, repeat=True)
 plt.show()
+
+
