@@ -35,3 +35,24 @@ class ClassifierAbstractClass(ABC):
     def getAction(self):
         # print("Overload classifier data function!")
         pass
+
+    """
+        Passes the GUI window into the class to be used to display things. There will be a log and an image viewer.
+    """
+    @abstractmethod
+    def display(self, window):
+        pass
+
+    """
+        Triggers when there is  a keyboard press.
+    """
+    @abstractmethod
+    def keyboard(self, key):
+        pass
+
+    """
+        Returns coordinates of where there is a mouse click
+    """
+    @abstractmethod
+    def mouse_click(self, x, y):
+        pass
