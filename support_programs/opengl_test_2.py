@@ -5,6 +5,8 @@ import math
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+# http://www.petercollingridge.co.uk/tutorials/3d/pygame/using-matrices/
+
 """Node Object"""
 class Node:
     # Node in 3D space. Between -1 -> 1
@@ -46,7 +48,8 @@ class Wireframe:
             node.x = centre_x + scale * (node.x - centre_x)
             node.y = centre_y + scale * (node.y - centre_y)
             node.z *= scale
-    def rotateZ(self, cx,cy,cz, radians):        
+    def rotateZ(self, centre, radians):
+        cx,cy,cz = centre        
         for node in self.nodes:
             x      = node.x - cx
             y      = node.y - cy
@@ -54,7 +57,8 @@ class Wireframe:
             theta  = math.atan2(y, x) + radians
             node.x = cx + d * math.cos(theta)
             node.y = cy + d * math.sin(theta)
-    def rotateX(self, cx,cy,cz, radians):
+    def rotateX(self, centre, radians):
+        cx,cy,cz = centre  
         for node in self.nodes:
             y      = node.y - cy
             z      = node.z - cz
@@ -62,7 +66,8 @@ class Wireframe:
             theta  = math.atan2(y, z) + radians
             node.z = cz + d * math.cos(theta)
             node.y = cy + d * math.sin(theta)
-    def rotateY(self, cx,cy,cz, radians):
+    def rotateY(self, centre, radians):
+        cx,cy,cz = centre  
         for node in self.nodes:
             x      = node.x - cx
             z      = node.z - cz
@@ -159,7 +164,6 @@ class ProjectionViewer:
         for wireframe in self.wireframes.values():
             centre = wireframe.findCentre()
             getattr(wireframe, rotateFunction)(centre, theta)
-
 
     def display(self):
         #Draw the wireframes on the screen.

@@ -34,3 +34,6 @@ python3 olimex_test.py -p /dev/ttyUSB0
 
 ### Needed library modules
 pystasm requires the OpenCV source code to be installed on your system. There is a script here to install it.
+
+### Arduino Arm Modules
+Requires 'braccio' library to be installed via Library Manager.
