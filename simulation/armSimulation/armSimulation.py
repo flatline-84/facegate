@@ -9,12 +9,6 @@ import time
 class armSimulation:
     def __init__(self):
 
-
-        self.rotateRightX = False
-        self.rotateLeftX = False
-        self.rotateUp = False
-        self.rotateDown = False
-
         self.armLower = np.array([[10, 10, 10], [10, 10, 40]])
         self.armMiddle = np.array([[10, 10, 40], [10, 10, 80]])
         self.armUpper = np.array([[10, 10, 80], [10, 10, 120]])
@@ -25,14 +19,12 @@ class armSimulation:
 
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111, projection='3d')
-
         self.ax.set_xlim(0, 200)
         self.ax.set_ylim(0, 200)
         self.ax.set_zlim(0, 200)
         self.ax.set_xlabel('X axis')
         self.ax.set_ylabel('Y axis')
         self.ax.set_zlabel('Z axis')
-
         self.ax.set_axis_on()
 
 
