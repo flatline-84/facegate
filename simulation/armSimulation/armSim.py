@@ -63,48 +63,8 @@ def rotation_axis(u):
     mag = math.sqrt(x*x+y*y+z*z)
     return [x/mag, y/mag, z/mag]
 
-    # def end(self):
-    #     temp = [0, 0, 0]
-    #     for i in range(0, len(self.base)):
-    #         temp[i] = self.base[i] + self.bendaxis[i] * self.length
-    #     return temp
-
-
-# class armSimulation:
-#     def __init__(self):
-#
-#
-#         self.rotateRightX = False
-#         self.rotateLeftX = False
-#         self.rotateUp = False
-#         self.rotateDown = False
-#
-#                                     # x y z
-#         self.armLower = np.array([[10, 10, 10], [10, 10, 40]])
-#         self.armMiddle = np.array([[10, 10, 40], [10, 20, 80]])
-#         self.armUpper = np.array([[10, 20, 80], [10, 30, 120]])
-#
-#         self.xCoordinates = np.array([])
-#         self.yCoordinates = np.array([])
-#         self.zCoordinates = np.array([])
-#
-#         self.fig = plt.figure()
-#         self.ax = self.fig.add_subplot(111, projection='3d')
-#
-#         self.ax.set_xlim(0, 200)
-#         self.ax.set_ylim(0, 200)
-#         self.ax.set_zlim(0, 200)
-#         self.ax.set_xlabel('X axis')
-#         self.ax.set_ylabel('Y axis')
-#         self.ax.set_zlabel('Z axis')
-#
-#         self.ax.set_axis_on()
-
-# sim = armSimulation()
-# scat, = plt.plot(sim.xCoordinates, sim.yCoordinates, sim.zCoordinates, '-bo', ms=10)
 
 sim = Drawing()
-# scat, = plt.plot(sim.xCoordinates, sim.yCoordinates, sim.zCoordinates, '-bo', ms=10)
 scat, = plt.plot([], [], [], '-bo', ms=10)
 scat2, = plt.plot([], [], [], '-bo', ms=10)
 
@@ -124,11 +84,6 @@ def simData():
     global arm_n
     global rotation
     global bend
-    #yield sim.armLower, sim.armMiddle, sim.armUpper
-
-    # arm_n = int(input("arm #"))
-    # rotation = int(input("rotation degrees"))
-    # bend = int(input("bend degrees"))
 
     if rotation != 0:
         print("rotation isnt zero!!")
@@ -136,15 +91,12 @@ def simData():
 
         matrix = create_rotation_matrix(arms[arm_n].rotation_axis(), rotation)
         print("rotating around ", arms[arm_n].rotation_axis())
-        # arms[arm_n].bend_axis = (np.dot(np.array(arms[arm_n].bend_axis)-np.array(arms[arm_n].points)[0],
-        #                              np.array(matrix))+np.array(arms[arm_n].points)[0]).tolist()
-        # print(arms[arm_n].points)
+
         if len(arms)-1 > arm_n:
             for i in range(arm_n, len(arms)):
                 arms[i].points = (np.dot(np.array(arms[i].points)-np.array(arms[arm_n].points)[0],
                                          np.array(matrix))+np.array(arms[arm_n].points)[0]).tolist()
-                # arms[i].bend_axis = (np.dot(np.array(arms[i].bend_axis-np.array(arms[arm_n].points)[0]),
-                #                             np.array(matrix))+np.array(arms[arm_n].points)[0]).tolist()
+
                 arms[i].bend_axis = (np.dot(np.array(arms[i].bend_axis),
                                             np.array(matrix))).tolist()
                 print("arm", i, " points = ", arms[i].points)
@@ -170,25 +122,7 @@ def simData():
         print("bend done")
         bend = 0
 
-        # matrix = create_rotation_matrix(arms[arm_n].bend_axis, bend)
-        # if len(arms) > arm_n:
-        #     temp = np.array(arms[arm_n].points)[0] ;
-        #     for i in range(arm_n, len(arms)):
-        #         arms[i].points = (np.dot(np.array(arms[i].points)-np.array(arms[arm_n].points)[0],
-        #                                  np.array(matrix))+np.array(arms[arm_n].points)[0]).tolist()
-        #         arms[i].bend_axis = (np.dot(np.array(arms[i].bend_axis-np.array(arms[arm_n].points)[0]),
-        #                                     np.array(matrix))+np.array(arms[arm_n].points)[0]).tolist()
-        # arms[arm_n].points = (np.dot(np.array(arms[arm_n].points) - np.array(arms[arm_n].points)[0],
-        #                              np.array(matrix)) + np.array(arms[arm_n].points)[0]).tolist()
-        # bend = 0
-
-
-
-
-
     yield arms
-
-
 
 def simPoints(simData):
     global scat
@@ -204,36 +138,10 @@ def simPoints(simData):
         y_coordinates = np.append(y_coordinates, [simData[i].points[0][1], simData[i].points[1][1]])
         z_coordinates = np.append(z_coordinates, [simData[i].points[0][2], simData[i].points[1][2]])
 
-    # print("x: " + str(x_coordinates))
-    # print("axis: " + str(simData[0].rotation_axis()))
-    # print ("y: " + str(y_coordinates))
-    # print ("z: " + str(z_coordinates))
     scat.set_data(x_coordinates.tolist(),y_coordinates.tolist())
-    #scat2.set
     scat.set_3d_properties(z_coordinates.tolist())
 
-    # scat.set_data([simData[0].base[0],
-    #                simData[0].end()[0]],
-    #               [simData[0].base[1],
-    #                simData[0].end()[1]])
-    # scat.set_3d_properties([simData[0].base[2],
-    #                         simData[0].end()[2]])
-
-    # armLower, armMiddle, armUpper = simData[0], simData[1], simData[2]
-    # sim.xCoordinates = np.array([])
-    # sim.yCoordinates = np.array([])
-    # sim.zCoordinates = np.array([])
-    #
-    # for i in armLower, armMiddle, armUpper:
-    #     sim.xCoordinates = np.append(sim.xCoordinates, (i[0][0], i[1][0]))
-    #     sim.yCoordinates = np.append(sim.yCoordinates, (i[0][1], i[1][1]))
-    #     sim.zCoordinates = np.append(sim.zCoordinates, (i[0][2], i[1][2]))
-    #
-    # scat.set_data(sim.xCoordinates, sim.yCoordinates)
-    # scat.set_3d_properties(sim.zCoordinates)
     return scat,
-
-# ani = animation.FuncAnimation(sim.fig, simPoints, simData, blit=True, interval=10, repeat=True)
 
 def press(event):
     global arm_n
