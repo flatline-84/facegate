@@ -63,64 +63,56 @@ def rotation_axis(u):
     mag = math.sqrt(x*x+y*y+z*z)
     return [x/mag, y/mag, z/mag]
 
+remaining_rotation = 0
+remaining_bend = 0
 
-sim = Drawing()
-scat, = plt.plot([], [], [], '-bo', ms=10)
-scat2, = plt.plot([], [], [], '-bo', ms=10)
-
-arm0 = Arm([[10, 10, 10], [10, 10, 60]], [1, 0, 0])
-arm1 = Arm([[10, 10, 60], [10, 60, 60]], [1, 0, 0])
-arm2 = Arm([[10, 60, 60], [10, 90, 90]], [1, 0, 0])
-arm3 = Arm([[10, 90, 90], [20, 90, 120]], [1, 0, 0])
-
-arms = [arm0, arm1, arm2, arm3]#,arm1,arm2]
-
-arm_n = 0
-rotation = 0
-bend = 0
 def simData():
     global arms
     global input
     global arm_n
     global rotation
     global bend
-
+    global remaining_rotation
+    global remaining_bend
     if rotation != 0:
-        print("rotation isnt zero!!")
-        # print(arms[arm_n].points)
+        if remaining_rotation < rotation:
+            matrix = create_rotation_matrix(arms[arm_n].rotation_axis(), rotation/100)
+            print("rotating around ", arms[arm_n].rotation_axis())
 
-        matrix = create_rotation_matrix(arms[arm_n].rotation_axis(), rotation)
-        print("rotating around ", arms[arm_n].rotation_axis())
+            if len(arms)-1 > arm_n:
+                for i in range(arm_n, len(arms)):
+                    arms[i].points = (np.dot(np.array(arms[i].points)-np.array(arms[arm_n].points)[0],
+                                             np.array(matrix))+np.array(arms[arm_n].points)[0]).tolist()
 
-        if len(arms)-1 > arm_n:
-            for i in range(arm_n, len(arms)):
-                arms[i].points = (np.dot(np.array(arms[i].points)-np.array(arms[arm_n].points)[0],
-                                         np.array(matrix))+np.array(arms[arm_n].points)[0]).tolist()
-
-                arms[i].bend_axis = (np.dot(np.array(arms[i].bend_axis),
-                                            np.array(matrix))).tolist()
-                print("arm", i, " points = ", arms[i].points)
-                print("arm", i, " bend_axis = ", arms[i].bend_axis)
-    rotation = 0
+                    arms[i].bend_axis = (np.dot(np.array(arms[i].bend_axis),
+                                                np.array(matrix))).tolist()
+                    print("arm", i, " points = ", arms[i].points)
+                    print("arm", i, " bend_axis = ", arms[i].bend_axis)
+            remaining_rotation = remaining_rotation + rotation/100
+        else:
+            rotation = 0
+            remaining_rotation = 0
 
     if bend != 0:
-        print("bend isnt zero!!")
-        print("len(arms) = ", len(arms))
-        print("arm ", arm_n, " points", arms[arm_n].points)
-        matrix = create_rotation_matrix(arms[arm_n].bend_axis, bend)
-        temp = np.array(arms[arm_n].points)[0]
-        if len(arms)-1 > arm_n:
-            for i in range(arm_n+1, len(arms)):
-                arms[i].points = (np.dot(np.array(arms[i].points) - temp,
+        if remaining_bend < bend:
+            print("bend isnt zero!!")
+            print("len(arms) = ", len(arms))
+            print("arm ", arm_n, " points", arms[arm_n].points)
+            matrix = create_rotation_matrix(arms[arm_n].bend_axis, bend/100)
+            temp = np.array(arms[arm_n].points)[0]
+            if len(arms)-1 > arm_n:
+                for i in range(arm_n+1, len(arms)):
+                    arms[i].points = (np.dot(np.array(arms[i].points) - temp,
+                                             np.array(matrix)) + temp).tolist()
+                    print("arm ", i, " points", arms[i].points)
+                    arms[i].bend_axis = (np.dot(np.array(arms[i].bend_axis - temp),
+                                                np.array(matrix)) + temp).tolist()
+            arms[arm_n].points = (np.dot(np.array(arms[arm_n].points) - temp,
                                          np.array(matrix)) + temp).tolist()
-                print("arm ", i, " points", arms[i].points)
-                arms[i].bend_axis = (np.dot(np.array(arms[i].bend_axis - temp),
-                                            np.array(matrix)) + temp).tolist()
-        arms[arm_n].points = (np.dot(np.array(arms[arm_n].points) - temp,
-                                     np.array(matrix)) + temp).tolist()
-
-        print("bend done")
-        bend = 0
+            remaining_bend = remaining_bend + bend/100
+        else:
+            print("bend done")
+            bend = 0
 
     yield arms
 
@@ -151,6 +143,28 @@ def press(event):
         arm_n = int(input("arm #"))
         rotation = math.pi/180*int(input("rotation degrees"))
         bend = math.pi/180*int(input("bend degrees"))
+
+def wait_for_input():
+    arm_n = int(input("arm #"))
+    rotation = math.pi / 180 * int(input("rotation degrees"))
+    bend = math.pi / 180 * int(input("bend degrees"))
+    return arm_n, rotation, bend
+
+sim = Drawing()
+scat, = plt.plot([], [], [], '-bo', ms=10)
+scat2, = plt.plot([], [], [], '-bo', ms=10)
+
+arm0 = Arm([[10, 10, 10], [10, 10, 60]], [1, 0, 0])
+arm1 = Arm([[10, 10, 60], [10, 60, 60]], [1, 0, 0])
+arm2 = Arm([[10, 60, 60], [10, 90, 90]], [1, 0, 0])
+arm3 = Arm([[10, 90, 90], [20, 90, 120]], [1, 0, 0])
+
+arms = [arm0, arm1, arm2, arm3]#,arm1,arm2]
+
+arm_n = 0
+rotation = 0
+bend = 0
+
 
 sim.fig.canvas.mpl_connect('key_press_event', press)
 ani = animation.FuncAnimation(sim.fig, simPoints, simData, blit=True, interval=10, repeat=True)
