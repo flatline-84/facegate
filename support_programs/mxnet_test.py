@@ -18,7 +18,7 @@ test_image = np.array(img)#[np.newaxis, np.newaxis, :, :]
 data_names = [graph_input for graph_input in sym.list_inputs()
                     if graph_input not in arg]
 
-print(data_names)
+# print(data_names)
 
 mod = mx.mod.Module(symbol=sym, data_names=data_names, context=mx.cpu(), label_names=None)
 mod.bind(for_training=False, data_shapes=[(data_names[0],test_image.shape)], label_shapes=None)
@@ -28,8 +28,19 @@ from collections import namedtuple
 Batch = namedtuple('Batch', ['data'])
 mod.forward(Batch([mx.nd.array(test_image)]))
 
-output = mod.get_outputs()[0][0]
-print (output)
+output_labels = ["anger", "neutral", "scream", "smile"]
+
+output = mod.get_outputs()[0][0].asnumpy().tolist()
+# dictionary = dict(zip(output_labels, output))
+# print (output)
+
+print(output_labels[output.index(max(output))], ":", max(output))
+
+# print(max(dictionary.values()))
+
+# print(output_labels)
+# print (output)
+# print(max(output))
 
 
 
