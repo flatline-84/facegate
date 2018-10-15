@@ -16,12 +16,8 @@ Requires Python >=3.4
 * PyOpenGL_accelerate - Arm Simulation
 * pygame
 * scipy
-* torch
-* torchvision
 * onnx
-* tensorflow
-* onnx-tf
-
+* onnx-mxnet
 
 python3 olimex_test.py -p /dev/ttyUSB0
 

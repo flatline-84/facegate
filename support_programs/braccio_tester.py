@@ -12,7 +12,7 @@ Steps:
     4. Provide the USB device as an argument to this program (no flags)
 
 Notes:
-    * baud rate is 19200
+    * baud rate is 9600
 """
 
 # XXXX  XXXX
@@ -64,6 +64,7 @@ class Joint:                 #char to be used in packet
     def get_string(self):
         return self.uniq_char + str(self.rotation)
 
+
 class Arm:
     def __init__(self):
         self.arm = {
@@ -78,6 +79,7 @@ class Arm:
         packet = ""
         for joint in self.arm.values():
             packet += joint.get_string()
+        packet += "\r"
         # Convert to bytes
         return str.encode(packet)
     
@@ -100,7 +102,7 @@ if __name__ == '__main__':
         arduino = serial.Serial()
         arduino.port = sys.argv[1]
         print(sys.argv[1])
-        arduino.baudrate = 19200
+        arduino.baudrate = 9600
 
         # Check that it connects to the Arduino
         while (not arduino.is_open):

@@ -69,7 +69,7 @@ class FacialDetection(InputAbstractClass):
         for p in pts:
             x = p[0]
             y = p[1]
-            cv2.circle(img, (x,y), 2, colour)
+            cv2.circle(img, (x,y), 1, colour)
         
         return img
 
