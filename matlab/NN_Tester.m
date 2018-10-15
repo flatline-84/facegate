@@ -7,6 +7,9 @@ networkAddr = ['NeuralNetworks/' networkName];
 classes = ["anger" "neutral" "scream" "smile"]; % Specify classes
 % Import network
 network = importONNXNetwork(networkAddr,'OutputLayerType','classification','ClassNames',classes); 
+% lgraph = layerGraph(network);
+% figure('Units','normalized','Position',[0.1 0.1 0.8 0.8]);
+% plot(lgraph)
 
 DISP_IMAGES = 0; %Set to 1 to display all images and classifications
 FILE_TERM = 'm';
