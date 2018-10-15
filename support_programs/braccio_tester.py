@@ -48,8 +48,6 @@ import serial
 import time
 from random import randint
 
-_DEBUG = False
-
 class Joint:                 #char to be used in packet 
     def __init__(self, nome, uniq_char):
         self.name = nome
@@ -93,7 +91,11 @@ class Arm:
 
 if __name__ == '__main__':
 
-    if (len(sys.argv) != 2):
+    if (len(sys.argv) == 1):
+        _DEBUG = True
+    elif (len(sys.argv) == 2):
+        _DEBUG = False
+    else:
         print("Too few or too many arguments! Insure you are only passing the Arduino port")
         print("Eg: /dev/ttyUSB0")
         exit(1)
