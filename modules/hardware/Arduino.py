@@ -123,6 +123,8 @@ class Arduino(HardwareAbstractClass):
 
         self.new_motion = False
         self.new_motion_nn = False
+        self.nn_timeout = time.clock()
+        self.do_nn = False
         # pass
 
     def update(self, data):
@@ -142,6 +144,11 @@ class Arduino(HardwareAbstractClass):
         if (not self.connected):
             return
 
+        if ("mast" in rec or (time.clock() - self.nn_timeout > 10)):
+            self.new_motion_nn = False
+            print("Disabling nn lock")
+            self.arm.reset_arm()
+
         # print (action)
         if action is not None:
             if (action["Left"]):
@@ -158,21 +165,33 @@ class Arduino(HardwareAbstractClass):
                 self.arm.mouthClose(2)
 
             self.new_motion = True
+            self.nn_timeout = time.clock()
 
+        val = ""
         if nn is not {}:
-            if (max(nn.values()) >= _THRESHOLD):
+            if (self.do_nn):
                 key = max(nn.items(), key=operator.itemgetter(1))[0]
-
-                if (key == "smile"):
-
-
+                if (key is not "neutral" and max(nn.values()) >= _THRESHOLD):
+                    # print(key)
+                    if (key == "smile"):
+                        val = "m3"
+                    if (key == "anger"):
+                        val = "m1"
+                    if (key == "scream"):
+                        val = "m2"
+                    self.new_motion_nn = True
+                    # print("Val: " + val)
 
         if (self.elapsed_time >= 0.1):
             # print ("Elapsed time: ", self.elapsed_time)
             # print("Current time: ", time.time())
-            if (self.new_motion):
+            if (self.new_motion and not self.new_motion_nn):
                 self.send_packet()
                 self.new_motion = False
+            if (self.new_motion_nn):
+                self.send_packet(val)
+                self.do_nn = False
+                
             self.elapsed_time = 0
             self.start = time.clock()
         
@@ -183,7 +202,9 @@ class Arduino(HardwareAbstractClass):
         self.window = window
 
     def keyboard(self, key):
-        pass
+        if (key is ' '):
+            self.do_nn = True
+            print("Ready for neural network!")
 
     def mouse_click(self, x, y):
         pass
@@ -207,6 +228,9 @@ class Arduino(HardwareAbstractClass):
         # Doing NN 
         else:
             try:
-                self.arduino.write(str.encode(mov))
+                packet = b''
+                for c in mov:
+                    packet += str.encode(c)
+                self.arduino.write(packet)
             except:
                 print("Arduino disconnected!")

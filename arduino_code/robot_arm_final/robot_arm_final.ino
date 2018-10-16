@@ -118,7 +118,7 @@ void setup() {
     */
     // the arm is aligned upwards  and the gripper is closed
                         //(step delay, M1, M2, M3, M4, M5, M6);
-//    Braccio.ServoMovement(20,         90, 90, 90, 90, 90,  65); 
+    Braccio.ServoMovement(20,         90, 55, 75, 45, 90,  60); 
 }
 
 void loop() {
@@ -157,7 +157,7 @@ void loop() {
     // masterfully perform actions
     else if (buffer[0] == 'm')
     {
-        Serial.println("Performing masterful actions");
+        
         switch(buffer[1])
         {
             case '1':
@@ -173,6 +173,7 @@ void loop() {
                 breathe();
         }
 //        serial_flush_buffer();
+        Serial.println("masterful");
     }
 
     for (int i = 0; i < BUF_SIZE; ++i)
