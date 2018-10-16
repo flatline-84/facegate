@@ -177,6 +177,7 @@ class FacialDetection(InputAbstractClass):
         self.face_found = False
 
         self.landmarks = None
+        self.og_frame = None
 
         # print ("Facial Detection!")
         try:
@@ -188,6 +189,8 @@ class FacialDetection(InputAbstractClass):
 
     def update(self):
         self.ret, self.frame = self.cap.read()
+
+        self.og_frame = self.frame
 
         if self.ret == True and found:
 
@@ -253,7 +256,7 @@ class FacialDetection(InputAbstractClass):
 
     def getData(self):
         # print ("Facial get data!")
-        return [self.landmarks, self.frame]
+        return [self.landmarks, self.og_frame]
         # return self.actions
 
     def display(self, window):

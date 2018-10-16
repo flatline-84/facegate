@@ -4,6 +4,11 @@ from ..abstract.ClassifierAbstract import ClassifierAbstractClass
 import numpy as np
 import mxnet as mx
 import onnx_mxnet
+import cv2
+from collections import namedtuple
+from PIL import Image
+
+_SIZE = 350
 
 class FaceClassifier(ClassifierAbstractClass):
 
@@ -34,6 +39,27 @@ class FaceClassifier(ClassifierAbstractClass):
             "Up": False,
             "Down": False
         }
+
+        # this won't fail if you give it the wrong file path :/
+        self.faceCascade = cv2.CascadeClassifier("support_programs/haarcascade_frontalface_default.xml")
+
+        self.sym, self.arg = onnx_mxnet.import_model('support_programs/NN_V03_01.onnx')
+
+        test_image = np.zeros((350,350))
+        # (1, 1, 350, 350)
+        # (480, 640, 3)
+
+        self.data_names = [graph_input for graph_input in self.sym.list_inputs()
+                    if graph_input not in self.arg]
+
+        self.mod = mx.mod.Module(symbol=self.sym, data_names=self.data_names, context=mx.cpu(), label_names=None)
+        self.mod.bind(for_training=False, data_shapes=[(self.data_names[0], test_image.shape)], label_shapes=None)
+        self.mod.set_params(arg_params=self.arg, aux_params=self.arg, allow_missing=True, allow_extra=True)
+
+        self.Batch = namedtuple('Batch', ['data'])
+        self.output_labels = ["anger", "neutral", "scream", "smile"]
+        self.nn_results = None
+        # print(test_image.shape)
         #,data
 
     def classify_point_data(self, pts):
@@ -76,10 +102,54 @@ class FaceClassifier(ClassifierAbstractClass):
 
         if (diff > gap):
             self.actions["MouthOpen"] = True
+
+    # Returns only the face in the correct format
+    def chop_face(self, frame):
+        frame = cv2.flip(frame, 1)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # print(frame)
+
+        faces = self.faceCascade.detectMultiScale(frame,
+                                                scaleFactor=1.2,
+                                                minNeighbors=8,
+                                                minSize=(50,50),
+                                                flags=cv2.CASCADE_SCALE_IMAGE
+                                                )
+
+        print("Got a face?")
+        for (x, y, w, h) in faces:
+            # Get original size of face
+            print("Do I make it here?")
+            img = frame[y:(y+h), x:(x+w)]
+            return np.asarray(Image.fromarray(img).resize((_SIZE, _SIZE)))
+        return None
+
+    def classify_neural_network(self, img):
+        img = self.chop_face(img)
+
+        print("here?")
+        if (img is not None):
+            try:
+                print(img.shape)
+                self.mod.forward(self.Batch([mx.nd.array(img)]))
+            except:
+                print("something failed")
+            print("output time?")
+            output = self.mod.get_outputs()[0][0].asnumpy().tolist()
+            self.nn_results = dict(zip(self.output_labels, output))
+
+            for key, value in self.nn_results.items():
+                print(key + ":" + str(value))
+
+
     def update(self, data):
 
         pts, img = data
-        self.classify_point_data(pts)
+        if (len(pts) > 0):
+            self.classify_point_data(pts)
+        if (len(img) > 0):
+            self.classify_neural_network(img)
 
     def getAction(self):
         # print ("Face classifier action")

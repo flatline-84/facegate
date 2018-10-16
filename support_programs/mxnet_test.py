@@ -15,6 +15,8 @@ img = Image.open('out_test/anger/m-daniel-1.png').resize((350, 350))
 # # img_y, img_cb, img_cr = img_ycbcr.split()
 test_image = np.array(img)#[np.newaxis, np.newaxis, :, :]
 
+print(test_image.shape)
+
 data_names = [graph_input for graph_input in sym.list_inputs()
                     if graph_input not in arg]
 
