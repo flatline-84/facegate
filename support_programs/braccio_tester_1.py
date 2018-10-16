@@ -48,70 +48,6 @@ import serial
 import time
 from random import randint
 
-
-# # Sequence 1 - Pick up/put down
-# Braccio.ServoMovement(20, 0, 45, 55, 45, 90, 10); // Bend
-# to
-# pick
-# up
-# delay(500);
-# Braccio.ServoMovement(10, 0, 45, 55, 45, 90, 73); // Close
-# Claw
-# delay(500);
-# Braccio.ServoMovement(20, 180, 90, 55, 90, 90, 73);
-# delay(500);
-# Braccio.ServoMovement(20, 180, 45, 55, 45, 90, 73);
-# delay(500);
-# Braccio.ServoMovement(20, 180, 45, 55, 45, 90, 10);
-#
-# delay(1000);
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73);
-
-# Sequence 2 - Door Handle
-# Braccio.ServoMovement(20, 0, 45, 55, 45, 90, 10); // Bend
-# to
-# pick
-# up
-# delay(500);
-# Braccio.ServoMovement(10, 90, 45, 90, 45, 90, 10); // Claw open
-# Claw
-# delay(500);
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73); // Close Claw
-# delay(500);
-# Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 73); // Rotate Claw
-# delay(500);
-# Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 10); // Open Claw
-#
-# delay(1000);
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73); // Reset
-
-# Sequence 3 - Wave
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73); // Bend
-# to
-# pick
-# up
-# delay(500);
-# Braccio.ServoMovement(10, 0, 45, 90, 90, 90, 10); // Claw open
-# Claw
-# delay(500);
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 10); //  Up claw open
-# delay(500);
-# Braccio.ServoMovement(20, 90, 60, 80, 80, 90, 10); // To the side
-# delay(100);
-# Braccio.ServoMovement(20, 90, 120, 100, 100, 90, 10); // Other side
-# delay(100);
-# Braccio.ServoMovement(20, 90, 60, 80, 80, 90, 10); // To the side
-# delay(100);
-# Braccio.ServoMovement(20, 90, 120, 100, 100, 90, 10); // Other side
-# delay(100);
-# Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 10); //
-#
-# delay(1000);
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73); // Reset
-
-
-
-
 _DEBUG = False
 
 class Joint:                 #char to be used in packet 
@@ -150,7 +86,7 @@ class Arm:
     def randomize_rotation(self):
         #try and keep it safe
         for joint in self.arm.values():
-            num = randint(20, 160)
+            num = randint(20, 90)
             joint.set_rotation(num)
 
     
@@ -163,12 +99,10 @@ if __name__ == '__main__':
         exit(1)
 
     if (not _DEBUG):
-        arduino = serial.Serial()
-        arduino.port = sys.argv[1]
-        print(sys.argv[1])
-        arduino.baudrate = 9600
 
-        # Check that it connects to the Arduino
+        arduino=serial.Serial(sys.argv[1],9600)
+
+	# Check that it connects to the Arduino
         while (not arduino.is_open):
             arduino.open()
             print("Trying to connect to Arduino...")
@@ -184,4 +118,4 @@ if __name__ == '__main__':
         if (not _DEBUG): arduino.write(packet)
         arm.randomize_rotation()
         # Change this if it's too slow / fast
-        time.sleep(5)
+        time.sleep(1)

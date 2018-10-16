@@ -5,12 +5,12 @@ from matplotlib.pyplot import imshow
 from PIL import Image
 
 
-sym, arg = onnx_mxnet.import_model('NN_V03_01.onnx')
+sym, arg = onnx_mxnet.import_model('../matlab/NeuralNetworks/NN_V03_02_350,350.onnx')
 # mx.viz.plot_network(sym, node_attrs={"shape":"oval","fixedsize":"false"})
 
 
 
-img = Image.open('out_test/anger/m-daniel-1.png').resize((350, 350))
+img = Image.open('out_test/anger/m-daniel-20.png').resize((350, 350))
 # # img_ycbcr = img.convert("YCbCr")
 # # img_y, img_cb, img_cr = img_ycbcr.split()
 test_image = np.array(img)#[np.newaxis, np.newaxis, :, :]
