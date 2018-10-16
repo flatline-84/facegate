@@ -66,7 +66,9 @@ class WindowManager():
         self.root.title("Facegate")
         # self.root.geometry("640x480")
         # self.root.geometry("1280x480")
-        self.root.geometry("1920x480")
+        # self.root.geometry("1920x480")
+        self.root.geometry("1920x960")
+
 
         self.root.configure(background = "white")
 
@@ -88,7 +90,7 @@ class WindowManager():
 
         ## Information Window
         self.info_text_frame = Text(self.root)
-        self.info_text_frame.grid(row=1, column=0)
+        self.info_text_frame.grid(row=1, column=0, sticky=N)
         self.info_text = "\
         Welcome to Facegate!\n\
         Peter Kydas - s3485580\n\
@@ -99,7 +101,7 @@ class WindowManager():
 
         # Canvas Window
         self.canvas = Canvas(self.root, bg="white", height=480, width=640)
-        self.canvas.grid(row=0, column=2, rowspan=2)
+        self.canvas.grid(row=1, column=1)
         # x1, y1, x2, y2 - top left to bottom right
         # self.canvas_size = self.canvas.bbox(None)
         # print (self.canvas_size)
@@ -115,19 +117,20 @@ class WindowManager():
 
         # self.tkimg = PhotoImage(file="./numbered.jpg")
         self.imglabel = Label(self.root, image=self.tkimg)
-        self.imglabel.grid(row=0, column=1,rowspan=3,  sticky=E)
+        self.imglabel.grid(row=0, column=1,  sticky=N)
 
         ## Configure column weights
-        self.root.grid_columnconfigure(0, weight=8)
-        self.root.grid_columnconfigure(1, weight=0)
-        self.root.grid_columnconfigure(2, weight=1)
-        self.root.grid_rowconfigure(0, weight=1)
-        self.root.grid_rowconfigure(1, weight=7)
+        # self.root.grid_columnconfigure(0, weight=8)
+        # self.root.grid_columnconfigure(1, weight=0)
+        # self.root.grid_columnconfigure(2, weight=1)
+        # self.root.grid_rowconfigure(0, weight=1)
+        # self.root.grid_rowconfigure(1, weight=7)
         # self.root.grid_rowconfigure(2, weight=25)
 
         self._stop_event = False
 
-
+    def get_root(self):
+        return self.root
 
     def print(self, text):
         self.log_text_frame.insert(END, str(self.line_number) +": ")

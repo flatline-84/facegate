@@ -24,13 +24,14 @@ if __name__ == '__main__':
     classifier =        FaceClassifier.FaceClassifier()
     hardwareArduino =   Arduino.Arduino()
     hardware =          FaceSimulation.FaceSimulation()
-    # hardware = ArmSimulation.ArmSimulation()
+    hardwareSim =       ArmSimulation.ArmSimulation()
 
 
     inputDevice.init()
     classifier.init()
     hardware.init()
     hardwareArduino.init()
+    hardwareSim.init()
 
     running = True
     firstRun = True
@@ -41,13 +42,14 @@ if __name__ == '__main__':
     window.register_keyboard(classifier.keyboard)
     window.register_keyboard(hardware.keyboard)
     window.register_keyboard(hardwareArduino.keyboard)
+    window.register_keyboard(hardwareSim.keyboard)
     window.register_keyboard(keyboard_event)
-
 
     window.register_mouse(inputDevice.mouse_click)
     window.register_mouse(classifier.mouse_click)
     window.register_mouse(hardware.mouse_click) 
     window.register_mouse(hardwareArduino.mouse_click)
+    window.register_mouse(hardwareSim.mouse_click)
 
     while(running):
         # If user presses 'q' key, program will quit
@@ -55,7 +57,7 @@ if __name__ == '__main__':
             print ("Killing program")
             window.callback()
             break
-  
+
         # continue
         if (not paused):
             inputDevice.update()
@@ -80,9 +82,11 @@ if __name__ == '__main__':
             # Need to give it facial points to draw, normal actions, NN values
             hardware.update([data[0], action[0], action[1]])
             hardwareArduino.update(action)
+            hardwareSim.update(hardwareArduino.get_packet_string())
         
         hardware.display(window)
         hardwareArduino.display(window)
+        hardwareSim.display(window)
 
         # hardware.connect()
 

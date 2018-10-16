@@ -94,6 +94,13 @@ class Arm:
         packet += str.encode("\r")
         # Convert to bytes
         return packet
+    def get_packet_string(self):
+        packet = ""
+
+        for joint in self.arm.values():
+            packet += "x" + str(joint.rotation)
+        
+        return packet
 
     
     # def randomize_rotation(self):
@@ -134,8 +141,12 @@ class Arduino(HardwareAbstractClass):
         action, nn = data
 
         if (self.arduino):
-            bytesToRead = self.arduino.inWaiting()
-            rec = self.arduino.read(bytesToRead).decode("utf-8")
+            rec = ''
+            try:
+                bytesToRead = self.arduino.inWaiting()
+                rec = self.arduino.read(bytesToRead).decode("utf-8")
+            except:
+                print("Arduino serial error!")
             if (rec is not '' and self.window is not None):
                 self.window.print("Received: " + rec)
                 
@@ -210,6 +221,9 @@ class Arduino(HardwareAbstractClass):
 
     def mouse_click(self, x, y):
         pass
+
+    def get_packet_string(self):
+        return self.arm.get_packet_string()
 
     def send_packet(self, mov=None):
 

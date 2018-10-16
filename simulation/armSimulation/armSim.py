@@ -177,11 +177,11 @@ def simData():
                 offset = np.array(clawr[0].points[0])
                 for i in range(0, len(clawr)):
                     clawr[i].points = (np.dot(np.array(clawr[i].points) - offset,
-                                                 np.array(matrixr)) + offset).tolist()
+                                                np.array(matrixr)) + offset).tolist()
                 for i in range(0, len(clawl)):
 
                     clawl[i].points = (np.dot(np.array(clawl[i].points) - offset,
-                                                 np.array(matrixl)) + offset).tolist()
+                                                np.array(matrixl)) + offset).tolist()
                 remaining_bend = remaining_bend + bend / 100
             else:
                 # print("CRAW bend done")
@@ -225,19 +225,18 @@ def simData():
                 if len(arms)-1 > arm_n:
                     for i in range(arm_n+1, len(arms)):
                         arms[i].points = (np.dot(np.array(arms[i].points) - temp,
-                                                 np.array(matrix)) + temp).tolist()
+                                                np.array(matrix)) + temp).tolist()
                         # print("arm ", i, " points", arms[i].points)
                         arms[i].bend_axis = (np.dot(np.array(arms[i].bend_axis - temp),
                                                     np.array(matrix)) + temp).tolist()
                 arms[arm_n].points = (np.dot(np.array(arms[arm_n].points) - temp,
-                                             np.array(matrix)) + temp).tolist()
+                                            np.array(matrix)) + temp).tolist()
                 remaining_bend = remaining_bend + bend/100
             else:
                 # print("bend done")
                 remaining_bend = 0
                 bend = 0
                 arm_n = arm_n + 1
-
 
     yield arms
 
