@@ -48,6 +48,7 @@ import serial
 import time
 from random import randint
 
+_BUF_SIZE = 15
 
 # # Sequence 1 - Pick up/put down
 # Braccio.ServoMovement(20, 0, 45, 55, 45, 90, 10); // Bend
@@ -63,7 +64,7 @@ from random import randint
 # Braccio.ServoMovement(20, 180, 45, 55, 45, 90, 73);
 # delay(500);
 # Braccio.ServoMovement(20, 180, 45, 55, 45, 90, 10);
-#
+
 # delay(1000);
 # Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73);
 
@@ -81,7 +82,7 @@ from random import randint
 # Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 73); // Rotate Claw
 # delay(500);
 # Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 10); // Open Claw
-#
+
 # delay(1000);
 # Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73); // Reset
 
@@ -105,7 +106,7 @@ from random import randint
 # Braccio.ServoMovement(20, 90, 120, 100, 100, 90, 10); // Other side
 # delay(100);
 # Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 10); //
-#
+
 # delay(1000);
 # Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73); // Reset
 
@@ -126,7 +127,7 @@ class Joint:                 #char to be used in packet
             rot = 0
         self.rotation = rot
     def get_string(self):
-        return self.uniq_char + str(self.rotation)
+        return [str.encode(self.uniq_char), bytes([self.rotation])]
 
 
 class Arm:
@@ -136,16 +137,18 @@ class Arm:
             "shoulder": Joint("shoulder", 's'),
             "elbow":    Joint("elbow", 'e'),
             "wrist":    Joint("wrist", 'w'),
+            "hand":    Joint("hand", 'h'),
             "fingers":  Joint("fingers", 'f')
         }
     def get_packet(self):
         # should create in order (I HOPE)
-        packet = ""
+        packet = b''
         for joint in self.arm.values():
-            packet += joint.get_string()
-        packet += "\r"
+            for b in joint.get_string():
+                packet += b
+        packet += str.encode("\r")
         # Convert to bytes
-        return str.encode(packet)
+        return packet
     
     def randomize_rotation(self):
         #try and keep it safe
@@ -170,22 +173,38 @@ if __name__ == '__main__':
         arduino = serial.Serial()
         arduino.port = sys.argv[1]
         print(sys.argv[1])
-        arduino.baudrate = 9600
+        arduino.baudrate = 115200
 
         # Check that it connects to the Arduino
         while (not arduino.is_open):
             arduino.open()
             print("Trying to connect to Arduino...")
             time.sleep(2)
-        print("Connected!")
+        print("Connected to Arduino!")
 
     arm = Arm()
     print("Initial packet: ", arm.get_packet())
 
+    connected = False
+
     while(True):
+        bytesToRead = arduino.inWaiting()
+        rec = arduino.read(bytesToRead).decode("utf-8")
+        if (rec is not ''):
+            print("Received: " + rec)
+        
+        if (not connected and "Connect" in rec):
+            connected = True
+            arduino.write(b'm3')
+            print("Beginning program!")
+        if (not connected):
+            continue
+
         packet = arm.get_packet()
-        print("Sending packet: ", packet)
-        if (not _DEBUG): arduino.write(packet)
-        arm.randomize_rotation()
+        # print("Sending packet: ", (packet))
+        # if (not _DEBUG): arduino.write(packet)
+        # arm.randomize_rotation()
         # Change this if it's too slow / fast
-        time.sleep(5)
+        # time.sleep(5)
+        # if (not _DEBUG): arduino.write(b'm2')
+        # time.sleep(5)
