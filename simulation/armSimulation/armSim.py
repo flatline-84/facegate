@@ -12,9 +12,9 @@ class Drawing:
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111, projection='3d')
 
-        self.ax.set_xlim(-200, 200)
-        self.ax.set_ylim(-200, 200)
-        self.ax.set_zlim(-200, 200)
+        self.ax.set_xlim(0, 200)
+        self.ax.set_ylim(0, 200)
+        self.ax.set_zlim(0, 200)
         self.ax.set_xlabel('X axis')
         self.ax.set_ylabel('Y axis')
         self.ax.set_zlabel('Z axis')
@@ -75,9 +75,9 @@ def simData():
     global remaining_rotation
     global remaining_bend
     if rotation != 0:
-        if remaining_rotation < rotation:
+        if math.fabs(remaining_rotation) < math.fabs(rotation):
             matrix = create_rotation_matrix(arms[arm_n].rotation_axis(), rotation/100)
-            print("rotating around ", arms[arm_n].rotation_axis())
+            # print("rotating around ", arms[arm_n].rotation_axis())
 
             if len(arms)-1 > arm_n:
                 for i in range(arm_n, len(arms)):
@@ -86,32 +86,34 @@ def simData():
 
                     arms[i].bend_axis = (np.dot(np.array(arms[i].bend_axis),
                                                 np.array(matrix))).tolist()
-                    print("arm", i, " points = ", arms[i].points)
-                    print("arm", i, " bend_axis = ", arms[i].bend_axis)
+                    # print("arm", i, " points = ", arms[i].points)
+                    # print("arm", i, " bend_axis = ", arms[i].bend_axis)
             remaining_rotation = remaining_rotation + rotation/100
         else:
             rotation = 0
             remaining_rotation = 0
 
     if bend != 0:
-        if remaining_bend < bend:
-            print("bend isnt zero!!")
-            print("len(arms) = ", len(arms))
-            print("arm ", arm_n, " points", arms[arm_n].points)
+        print("bend isnt zero!!")
+        print(math.fabs(remaining_bend))
+        print(math.fabs(bend))
+        if math.fabs(remaining_bend) < math.fabs(bend):
+
             matrix = create_rotation_matrix(arms[arm_n].bend_axis, bend/100)
             temp = np.array(arms[arm_n].points)[0]
             if len(arms)-1 > arm_n:
                 for i in range(arm_n+1, len(arms)):
                     arms[i].points = (np.dot(np.array(arms[i].points) - temp,
                                              np.array(matrix)) + temp).tolist()
-                    print("arm ", i, " points", arms[i].points)
+                    # print("arm ", i, " points", arms[i].points)
                     arms[i].bend_axis = (np.dot(np.array(arms[i].bend_axis - temp),
                                                 np.array(matrix)) + temp).tolist()
             arms[arm_n].points = (np.dot(np.array(arms[arm_n].points) - temp,
                                          np.array(matrix)) + temp).tolist()
             remaining_bend = remaining_bend + bend/100
         else:
-            print("bend done")
+            # print("bend done")
+            remaining_bend = 0
             bend = 0
 
     yield arms
@@ -144,22 +146,30 @@ def press(event):
         rotation = math.pi/180*int(input("rotation degrees"))
         bend = math.pi/180*int(input("bend degrees"))
 
-def wait_for_input():
-    arm_n = int(input("arm #"))
-    rotation = math.pi / 180 * int(input("rotation degrees"))
-    bend = math.pi / 180 * int(input("bend degrees"))
-    return arm_n, rotation, bend
+
 
 sim = Drawing()
-scat, = plt.plot([], [], [], '-bo', ms=10)
+scat, = plt.plot([], [], [], '-bo', ms=5)
 scat2, = plt.plot([], [], [], '-bo', ms=10)
 
 arm0 = Arm([[10, 10, 10], [10, 10, 60]], [1, 0, 0])
-arm1 = Arm([[10, 10, 60], [10, 60, 60]], [1, 0, 0])
-arm2 = Arm([[10, 60, 60], [10, 90, 90]], [1, 0, 0])
-arm3 = Arm([[10, 90, 90], [20, 90, 120]], [1, 0, 0])
+arm1 = Arm([[10, 10, 60], [10, 40, 120]], [1, 0, 0])
+arm2 = Arm([[10, 40, 120], [10, 90, 150]], [1, 0, 0])
+arm3 = Arm([[10, 90, 150], [10, 150, 120]], [1, 0, 0])
 
-arms = [arm0, arm1, arm2, arm3]#,arm1,arm2]
+arm4 = Arm([[10, 150, 120],[5, 160, 120]],[1, 0, 0])
+arm5 = Arm([[5, 160, 120],[10, 170, 120]],[1, 0, 0])
+arm6 = Arm([[10,170,120],[5, 160, 120]],[1, 0, 0])
+arm7 = Arm([[5,160,120],[10, 150, 120]],[1, 0, 0])
+
+arm8 = Arm([[10, 150, 120],[15, 160, 120]],[1, 0, 0])
+arm9 = Arm([[15, 160, 120],[10, 170, 120]],[1, 0, 0])
+arm10 = Arm([[10,170,120],[15, 160, 120]],[1, 0, 0])
+arm11 = Arm([[15,160,120],[10, 150, 120]],[1, 0, 0])
+
+
+
+arms = [arm0, arm1, arm2, arm3, arm4, arm5, arm6, arm7, arm8, arm9, arm10, arm11] #,arm1,arm2]
 
 arm_n = 0
 rotation = 0
