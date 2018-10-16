@@ -11,6 +11,12 @@ from modules.hardware import Arduino
 from modules.hardware import FaceSimulation
 from modules.hardware import ArmSimulation
 
+paused = False
+
+def keyboard_event(key):
+    global paused
+    if key == ' ':
+        paused = not paused
 
 if __name__ == '__main__':
     print("Initiating program procedures...")
@@ -35,6 +41,8 @@ if __name__ == '__main__':
     window.register_keyboard(classifier.keyboard)
     window.register_keyboard(hardware.keyboard)
     window.register_keyboard(hardwareArduino.keyboard)
+    window.register_keyboard(keyboard_event)
+
 
     window.register_mouse(inputDevice.mouse_click)
     window.register_mouse(classifier.mouse_click)
@@ -49,7 +57,8 @@ if __name__ == '__main__':
             break
   
         # continue
-        inputDevice.update()
+        if (not paused):
+            inputDevice.update()
         # is array with landmark points and then original facial image
         data = inputDevice.getData()
         inputDevice.display(window)
@@ -60,16 +69,19 @@ if __name__ == '__main__':
             classifier.set_params(inputDevice.get_dead_zones())
             firstRun = False
 
-        classifier.update(data)
+        if (not paused):
+            classifier.update(data)
         action = classifier.getAction()
         classifier.display(window)
 
         # print("Action: ", action)
 
-        # Need to give it facial points to draw, normal actions, NN values
-        hardware.update([data[0], action[0], action[1]])
+        if (not paused):
+            # Need to give it facial points to draw, normal actions, NN values
+            hardware.update([data[0], action[0], action[1]])
+            hardwareArduino.update(action)
+        
         hardware.display(window)
-        hardwareArduino.update(action)
         hardwareArduino.display(window)
 
         # hardware.connect()

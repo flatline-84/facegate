@@ -112,6 +112,7 @@ class Arduino(HardwareAbstractClass):
             self.arduino  = serial.Serial('/dev/ttyACM0', 115200)
         except:
             print ("Serial not connected!")
+            self.arduino = None
 
         self.start = time.clock()
         self.counter = 0
@@ -132,77 +133,78 @@ class Arduino(HardwareAbstractClass):
 
         action, nn = data
 
-        bytesToRead = self.arduino.inWaiting()
-        rec = self.arduino.read(bytesToRead).decode("utf-8")
-        if (rec is not '' and self.window is not None):
-            self.window.print("Received: " + rec)
-            
-        if (not self.connected and "Connect" in rec):
-            self.connected = True
-            # self.arduino.write(b'm3')
-            # print("Beginning program!")
-        if (not self.connected):
-            return
-
-        if ("mast" in rec or (time.clock() - self.nn_timeout > 10)):
-            self.new_motion_nn = False
-            print("Disabling nn lock")
-            self.arm.reset_arm()
-
-        # print (action)
-        if action is not None:
-            if (action["Left"]):
-                self.arm.left(2)
-            if (action["Right"]):
-                self.arm.right(2)
-            if (action["Up"]):
-                self.arm.up(2)
-            if (action["Down"]):
-                self.arm.down(2)
-            if (action["MouthOpen"]):
-                self.arm.mouthOpen(10)
-            elif (not action["MouthOpen"]):
-                self.arm.mouthClose(2)
-
-            self.new_motion = True
-            self.nn_timeout = time.clock()
-
-        val = ""
-        if nn is not {}:
-            if (self.do_nn):
-                key = max(nn.items(), key=operator.itemgetter(1))[0]
-                if (key is not "neutral" and max(nn.values()) >= _THRESHOLD):
-                    # print(key)
-                    if (key == "smile"):
-                        val = "m3"
-                    if (key == "anger"):
-                        val = "m1"
-                    if (key == "scream"):
-                        val = "m2"
-                    self.new_motion_nn = True
-                    # print("Val: " + val)
-
-        if (self.elapsed_time >= 0.1):
-            # print ("Elapsed time: ", self.elapsed_time)
-            # print("Current time: ", time.time())
-            if (self.new_motion and not self.new_motion_nn):
-                self.send_packet()
-                self.new_motion = False
-            if (self.new_motion_nn):
-                self.send_packet(val)
-                self.do_nn = False
+        if (self.arduino):
+            bytesToRead = self.arduino.inWaiting()
+            rec = self.arduino.read(bytesToRead).decode("utf-8")
+            if (rec is not '' and self.window is not None):
+                self.window.print("Received: " + rec)
                 
-            self.elapsed_time = 0
-            self.start = time.clock()
-        
-        self.elapsed_time += time.clock() - self.start
+            if (not self.connected and "Connect" in rec):
+                self.connected = True
+                # self.arduino.write(b'm3')
+                # print("Beginning program!")
+            if (not self.connected):
+                return
+
+            if ("mast" in rec or (time.clock() - self.nn_timeout > 10)):
+                self.new_motion_nn = False
+                print("Disabling nn lock")
+                self.arm.reset_arm()
+
+            # print (action)
+            if action is not None:
+                if (action["Left"]):
+                    self.arm.left(2)
+                if (action["Right"]):
+                    self.arm.right(2)
+                if (action["Up"]):
+                    self.arm.up(2)
+                if (action["Down"]):
+                    self.arm.down(2)
+                if (action["MouthOpen"]):
+                    self.arm.mouthOpen(10)
+                elif (not action["MouthOpen"]):
+                    self.arm.mouthClose(2)
+
+                self.new_motion = True
+                self.nn_timeout = time.clock()
+
+            val = ""
+            if nn is not {}:
+                if (self.do_nn):
+                    key = max(nn.items(), key=operator.itemgetter(1))[0]
+                    if (key is not "neutral" and max(nn.values()) >= _THRESHOLD):
+                        # print(key)
+                        if (key == "smile"):
+                            val = "m3"
+                        if (key == "anger"):
+                            val = "m1"
+                        if (key == "scream"):
+                            val = "m2"
+                        self.new_motion_nn = True
+                        # print("Val: " + val)
+
+            if (self.elapsed_time >= 0.1):
+                # print ("Elapsed time: ", self.elapsed_time)
+                # print("Current time: ", time.time())
+                if (self.new_motion and not self.new_motion_nn):
+                    self.send_packet()
+                    self.new_motion = False
+                if (self.new_motion_nn):
+                    self.send_packet(val)
+                    self.do_nn = False
+                    
+                self.elapsed_time = 0
+                self.start = time.clock()
+            
+            self.elapsed_time += time.clock() - self.start
 
 
     def display(self, window):
         self.window = window
 
     def keyboard(self, key):
-        if (key is ' '):
+        if (key is 'n'):
             self.do_nn = True
             print("Ready for neural network!")
 
