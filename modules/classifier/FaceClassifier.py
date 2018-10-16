@@ -1,6 +1,9 @@
 from ..abstract.ClassifierAbstract import ClassifierAbstractClass
 
+# Neural Network required libraries
 import numpy as np
+import mxnet as mx
+import onnx_mxnet
 
 class FaceClassifier(ClassifierAbstractClass):
 
