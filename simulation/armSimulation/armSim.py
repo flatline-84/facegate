@@ -74,6 +74,9 @@ def simData():
     global bend
     global remaining_rotation
     global remaining_bend
+    global clawl
+    global clawr
+
     if rotation != 0:
         if math.fabs(remaining_rotation) < math.fabs(rotation):
             matrix = create_rotation_matrix(arms[arm_n].rotation_axis(), rotation/100)
@@ -153,23 +156,23 @@ scat, = plt.plot([], [], [], '-bo', ms=5)
 scat2, = plt.plot([], [], [], '-bo', ms=10)
 
 arm0 = Arm([[10, 10, 10], [10, 10, 60]], [1, 0, 0])
-arm1 = Arm([[10, 10, 60], [10, 40, 120]], [1, 0, 0])
-arm2 = Arm([[10, 40, 120], [10, 90, 150]], [1, 0, 0])
-arm3 = Arm([[10, 90, 150], [10, 150, 120]], [1, 0, 0])
+arm1 = Arm([[10, 10, 60], [10, 40, 100]], [1, 0, 0])
+arm2 = Arm([[10, 40, 100], [10, 90, 120]], [1, 0, 0])
 
-arm4 = Arm([[10, 150, 120],[5, 160, 120]],[1, 0, 0])
-arm5 = Arm([[5, 160, 120],[10, 170, 120]],[1, 0, 0])
-arm6 = Arm([[10,170,120],[5, 160, 120]],[1, 0, 0])
-arm7 = Arm([[5,160,120],[10, 150, 120]],[1, 0, 0])
+arm4 = Arm([[10, 90, 120],[5, 110, 120]],[1, 0, 0])
+arm5 = Arm([[5, 110, 120],[10, 130, 120]],[1, 0, 0])
+arm6 = Arm([[10,130, 120],[5, 110, 120]],[1, 0, 0])
+arm7 = Arm([[5,110,120],[10, 90, 120]],[1, 0, 0])
+#
+arm8 = Arm([[10, 90, 120], [15, 110, 120]], [1, 0, 0])
+arm9 = Arm([[15, 110, 120], [10, 130, 120]], [1, 0, 0])
+arm10 = Arm([[10, 130, 120], [15, 110, 120]], [1, 0, 0])
+arm11 = Arm([[15, 110, 120], [10, 90, 120]], [1, 0, 0])
 
-arm8 = Arm([[10, 150, 120],[15, 160, 120]],[1, 0, 0])
-arm9 = Arm([[15, 160, 120],[10, 170, 120]],[1, 0, 0])
-arm10 = Arm([[10,170,120],[15, 160, 120]],[1, 0, 0])
-arm11 = Arm([[15,160,120],[10, 150, 120]],[1, 0, 0])
-
-
-
-arms = [arm0, arm1, arm2, arm3, arm4, arm5, arm6, arm7, arm8, arm9, arm10, arm11] #,arm1,arm2]
+#
+# clawr = [arm4, arm5, arm6, arm7]
+# clawl = [arm8, arm9, arm10, arm11]
+arms = [arm0, arm1, arm2, arm4, arm5, arm6, arm7, arm8, arm9, arm10, arm11] #,arm1,arm2]
 
 arm_n = 0
 rotation = 0
