@@ -47,6 +47,7 @@ if __name__ == '__main__':
   
         # continue
         inputDevice.update()
+        # is array with landmark points and then original facial image
         data = inputDevice.getData()
         inputDevice.display(window)
 
@@ -54,6 +55,7 @@ if __name__ == '__main__':
 
         if (firstRun):
             classifier.set_params(inputDevice.get_dead_zones())
+            firstRun = False
 
         classifier.update(data)
         action = classifier.getAction()
@@ -62,7 +64,7 @@ if __name__ == '__main__':
         # print("Action: ", action)
 
         # Need to give it facial points to draw and also actions
-        hardware.update([inputDevice.getData(), action])
+        hardware.update([data[0], action])
         hardware.display(window)
 
         # hardware.connect()

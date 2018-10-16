@@ -27,6 +27,7 @@ class FaceSimulation(HardwareAbstractClass):
         self.dy =           30
 
     def update(self, params):
+        # print (params)
         self.data, self.actions = params
 
     def display(self, window):
@@ -55,13 +56,15 @@ class FaceSimulation(HardwareAbstractClass):
         
         if (len(self.points) == 0):
             # print(len(self.data))
-            for i in range(len(self.data) - 1):
-                self.points.append(self.window.canvas.create_line(self.data[i][0] + self.offset, self.data[i][1] , self.data[i+1][0] + self.offset, self.data[i+1][1], fill="blue", width=2))
-                print( self.data[i])
-            print (len(self.points))
+            if (len(self.data) > 0):
+                print(self.data)
+                for i in range(len(self.data) - 1):
+                    self.points.append(self.window.canvas.create_line(self.data[i][0] + self.offset, self.data[i][1] , self.data[i+1][0] + self.offset, self.data[i+1][1], fill="blue", width=2))
+                    print( self.data[i])
+                print (len(self.points))
 
         #Update face
-        elif (len(self.data) >0):
+        elif (len(self.data) > 0):
             for i in range(len(self.points)):
                 self.window.canvas.coords(self.points[i], self.data[i][0] + self.offset, self.data[i][1] , self.data[i+1][0] + self.offset, self.data[i+1][1]) 
                 # change coordinates
