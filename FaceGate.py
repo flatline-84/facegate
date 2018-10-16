@@ -26,6 +26,7 @@ if __name__ == '__main__':
     hardware.init()
 
     running = True
+    firstRun = True
 
     window = WindowManager()  
 
@@ -51,13 +52,17 @@ if __name__ == '__main__':
 
         # print ("Data: ", data)
 
+        if (firstRun):
+            classifier.set_params(inputDevice.get_dead_zones())
+
         classifier.update(data)
         action = classifier.getAction()
         classifier.display(window)
 
         # print("Action: ", action)
 
-        hardware.update(inputDevice.getData())
+        # Need to give it facial points to draw and also actions
+        hardware.update([inputDevice.getData(), action])
         hardware.display(window)
 
         # hardware.connect()

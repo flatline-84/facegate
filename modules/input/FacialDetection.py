@@ -19,43 +19,49 @@ class FacialDetection(InputAbstractClass):
         ptsNp = ptsNp.reshape((-1,1,2))
         return ptsNp
 
-    def recogniseActions(self, img, pts):
+    # def recogniseActions(self, pts):
 
-        #Clear actions
-        for key in self.actions.keys():
-            self.actions[key] = False
+    #     #Clear actions
+    #     for key in self.actions.keys():
+    #         self.actions[key] = False
 
+    #     # Nose Position
+    #     nose  = self.convertArrayToNumpy(
+    #                 pts[self.Face["NoseNostrils"][0]:self.Face["NoseNostrils"][-1]])
 
-        # Nose Position
-        nose  = self.convertArrayToNumpy(
-                    pts[self.Face["NoseNostrils"][0]:self.Face["NoseNostrils"][-1]])
+    #     pointX = [nose[4]][0][0][0]
+    #     pointY = [nose[4]][0][0][1]
 
-        pointX = [nose[4]][0][0][0]
-        pointY = [nose[4]][0][0][1]
+    #     if (pointX > self.deadZoneRight):
+    #         self.actions["Right"] = True
+    #     elif (pointX < self.deadZoneLeft):
+    #         self.actions["Left"] = True
 
+    #     if (pointY > self.deadZoneDown):
+    #         self.actions["Down"] = True
+    #     elif (pointY < self.deadZoneUp):
+    #         self.actions["Up"] = True
+    #     # Mouth actions
+    #     # top 68, bottom 69
+    #     # ptsUpperLip = convertArrayToNumpy(pts[Face["UpperLip"][0]:Face["UpperLip"][-1]])
+    #     # ptsLowerLip = convertArrayToNumpy(pts[Face["LowerLip"][0]:Face["LowerLip"][-1]])
 
-        if (pointX > self.deadZoneRight):
-            self.actions["Right"] = True
-        elif (pointX < self.deadZoneLeft):
-            self.actions["Left"] = True
+    #     ptsUpperLip = [self.convertArrayToNumpy(pts[68])][0][0][0][1]
+    #     ptsLowerLip = [self.convertArrayToNumpy(pts[69])][0][0][0][1]
 
-        if (pointY > self.deadZoneDown):
-            self.actions["Down"] = True
-        elif (pointY < self.deadZoneUp):
-            self.actions["Up"] = True
-        # Mouth actions
-        # top 68, bottom 69
-        # ptsUpperLip = convertArrayToNumpy(pts[Face["UpperLip"][0]:Face["UpperLip"][-1]])
-        # ptsLowerLip = convertArrayToNumpy(pts[Face["LowerLip"][0]:Face["LowerLip"][-1]])
+    #     diff = abs(ptsUpperLip - ptsLowerLip)
+    #     gap = 10
 
-        ptsUpperLip = [self.convertArrayToNumpy(pts[68])][0][0][0][1]
-        ptsLowerLip = [self.convertArrayToNumpy(pts[69])][0][0][0][1]
+    #     if (diff > gap):
+    #         self.actions["MouthOpen"] = True
 
-        diff = abs(ptsUpperLip - ptsLowerLip)
-        gap = 10
-
-        if (diff > gap):
-            self.actions["MouthOpen"] = True
+    def get_dead_zones(self):
+        if (not self.firstRun):
+            return {"deadZoneDown":     self.deadZoneDown, 
+                    "deadZoneLeft":     self.deadZoneLeft, 
+                    "deadZoneRight":    self.deadZoneRight,
+                    "deadZoneUp":       self.deadZoneUp
+                    }
 
 
     def drawOutlines(self, img, pts, colour):
@@ -76,8 +82,8 @@ class FacialDetection(InputAbstractClass):
     def paintDaFaceBro(self, img, pts):
 
         #Face Outline
-        ptsEye1= pts[self.Face["LeftPupil"][0]]
-        ptsEye2 = pts[self.Face["RightPupil"][0]]
+        # ptsEye1= pts[self.Face["LeftPupil"][0]]
+        # ptsEye2 = pts[self.Face["RightPupil"][0]]
         # cv2.line(img, tuple(ptsEye1), tuple(ptsEye2), (0,0,255), 3)
         # cv2.circle(img, tuple(ptsNp), 3, (0,0,255), -1)
 
@@ -110,21 +116,21 @@ class FacialDetection(InputAbstractClass):
 
         return img
 
-    def displayActions(self, img):
-        count = 0
-        x = 460
-        y = 60
-        dy = 30
+    # def displayActions(self, img):
+    #     count = 0
+    #     x = 460
+    #     y = 60
+    #     dy = 30
 
-        cv2.putText(img,"Actions:", (x,y), cv2.FONT_HERSHEY_SIMPLEX,
-                    1, (0, 0, 255), 3)
+    #     cv2.putText(img,"Actions:", (x,y), cv2.FONT_HERSHEY_SIMPLEX,
+    #                 1, (0, 0, 255), 3)
 
-        for key, value in self.actions.items():
-            if (value):
-                count += 1
-                cv2.putText(img, str(key), (x,y + (dy*count)), cv2.FONT_HERSHEY_SIMPLEX,
-                            1, (255, 0, 255), 2)
-        return img
+    #     for key, value in self.actions.items():
+    #         if (value):
+    #             count += 1
+    #             cv2.putText(img, str(key), (x,y + (dy*count)), cv2.FONT_HERSHEY_SIMPLEX,
+    #                         1, (255, 0, 255), 2)
+    #     return img
 
     def init(self):
         # need to convert list as it returns iterator
@@ -205,31 +211,34 @@ class FacialDetection(InputAbstractClass):
             #imgCol = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             self.img = cv2.cvtColor(self. frame, cv2.COLOR_BGR2GRAY)
 
-            # do processing here
-            self.landmarks = stasm.search_single(self.img)
-            # print (len(landmarks))
-            if len(self.landmarks) == 0:
-                self.face_found = False
-            else:
-                self.landmarks = stasm.force_points_into_image(self.landmarks, self.img)
-                self.face_found = True
-                
-                # print("Number of landmark points: ", len(landmarks))
-                pts = []
-                #pts = np.array(, np.int32)
-                for point in self.landmarks:
-                    pts.append([int(round(point[0])), int(round(point[1]))])
-                #print(pts)
-                ptsNp = np.array(pts, np.int32)
-                #print (pts)
-                ptsNp = ptsNp.reshape((-1,1,2))
-                #cv2.polylines(frame, [ptsNp], False, (0,255,0))
-                self.frame = self.paintDaFaceBro(self.frame, pts)
-                if (self.paintDebug):
-                    self.frame = self.paintDebugLines(self.frame, pts)
-                
-                self.recogniseActions(self.frame, pts)
-                self.frame = self.displayActions(self.frame)
+            if (found):
+                # do processing here
+                self.landmarks = stasm.search_single(self.img)
+                # print (len(landmarks))
+                if len(self.landmarks) == 0:
+                    self.face_found = False
+                else:
+                    self.landmarks = stasm.force_points_into_image(self.landmarks, self.img)
+                    self.face_found = True
+                    
+                    # print("Number of landmark points: ", len(landmarks))
+                    pts = []
+                    #pts = np.array(, np.int32)
+                    for point in self.landmarks:
+                        pts.append([int(round(point[0])), int(round(point[1]))])
+                    #print(pts)
+                    ptsNp = np.array(pts, np.int32)
+                    #print (pts)
+                    ptsNp = ptsNp.reshape((-1,1,2))
+                    #cv2.polylines(frame, [ptsNp], False, (0,255,0))
+                    self.frame = self.paintDaFaceBro(self.frame, pts)
+                    
+                    if (self.paintDebug):
+                        self.frame = self.paintDebugLines(self.frame, pts)
+                    
+                    ### Disabled due to classifier performing these functions now
+                    # self.recogniseActions(pts)
+                    # self.frame = self.displayActions(self.frame)
 
 
                 # for i in range(0, len(pts)):
@@ -249,7 +258,8 @@ class FacialDetection(InputAbstractClass):
 
     def display(self, window):
 
-        self.window = window
+        if (self.window is None):
+            self.window = window
 
         if (not self.face_found and self.ret):
             window.print("No face found")
