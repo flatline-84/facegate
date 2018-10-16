@@ -30,17 +30,21 @@ void serial_flush_buffer()
 void pickUp()
 {
     Serial.println("Picking up object");
+    Braccio.ServoMovement(20, 0, 90, 55, 90, 90, 10);
+    delay(500);
     Braccio.ServoMovement(20, 0, 45, 55, 45, 90, 10); // Bend
     delay(500);
     Braccio.ServoMovement(10, 0, 45, 55, 45, 90, 65); // Close
-    delay(500);
+    delay(300);
     Braccio.ServoMovement(20, 180, 90, 55, 90, 90, 65);
-    delay(500);
-    Braccio.ServoMovement(20, 180, 45, 55, 45, 90, 65);
-    delay(500);
-    Braccio.ServoMovement(20, 180, 45, 55, 45, 90, 10);
+    delay(300);
+    Braccio.ServoMovement(20, 180, 60, 55, 45, 90, 10);
+    delay(300);
+    Braccio.ServoMovement(20, 180, 85, 55, 45, 90, 10);
+    delay(300);
+    Braccio.ServoMovement(20, 1800, 90, 90, 90, 90, 65);
     delay(1000);
-    Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 65);
+
 }
 
 
@@ -48,15 +52,15 @@ void pickUp()
 void doorHandle()
 {
     Serial.println("Opening door handle");
-    Braccio.ServoMovement(20, 0, 45, 55, 45, 90, 10); // Bend
+    Braccio.ServoMovement(20, 90, 45, 75, 75, 0, 10); // Bend
     delay(500);
-    Braccio.ServoMovement(10, 90, 45, 90, 45, 90, 10); // Claw open
+    Braccio.ServoMovement(10, 90, 45, 75, 75, 0, 10); // Claw open
     delay(500);
-    Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 65); // Close Claw
+    Braccio.ServoMovement(20, 90, 45, 75, 75, 0, 65); // Close Claw
     delay(500);
-    Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 65); // Rotate Claw
+    Braccio.ServoMovement(20, 90, 45, 75, 75, 180, 65); // Rotate Claw
     delay(500);
-    Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 10); // Open Claw
+    Braccio.ServoMovement(20, 90, 45, 75, 75, 180, 10); // Open Claw
 
     delay(1000);
     Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 65); // Reset
@@ -73,15 +77,15 @@ void wave()
     delay(500);
     Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 10); //  Up claw open
     delay(500);
-    Braccio.ServoMovement(20, 90, 60, 80, 80, 90, 10); // To the side
+    Braccio.ServoMovement(20, 0, 60, 80, 80, 90, 10); // To the side
     delay(100);
-    Braccio.ServoMovement(20, 90, 120, 100, 100, 90, 10); // Other side
+    Braccio.ServoMovement(20, 0, 120, 100, 100, 90, 10); // Other side
     delay(100);
-    Braccio.ServoMovement(20, 90, 60, 80, 80, 90, 10); // To the side
+    Braccio.ServoMovement(20, 0, 60, 80, 80, 90, 10); // To the side
     delay(100);
-    Braccio.ServoMovement(20, 90, 120, 100, 100, 90, 10); // Other side
+    Braccio.ServoMovement(20, 0, 120, 100, 100, 90, 10); // Other side
     delay(100);
-    Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 10); //
+    Braccio.ServoMovement(20, 0, 45, 55, 45, 180, 10); //
 
     delay(1000);
     Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 65); // Reset
@@ -101,6 +105,7 @@ void setup() {
     //Wrist rotation (M5): 90 degrees
     //gripper (M6): 10 degrees
     Braccio.begin();
+    Braccio.ServoMovement(20,         90, 55, 75, 45, 90,  60); 
     Serial.begin(115200);
     //Wait for it to connect
     while (!Serial)
@@ -118,7 +123,7 @@ void setup() {
     */
     // the arm is aligned upwards  and the gripper is closed
                         //(step delay, M1, M2, M3, M4, M5, M6);
-    Braccio.ServoMovement(20,         90, 55, 75, 45, 90,  60); 
+//    
 }
 
 void loop() {

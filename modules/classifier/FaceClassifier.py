@@ -46,7 +46,9 @@ class FaceClassifier(ClassifierAbstractClass):
         # this won't fail if you give it the wrong file path :/
         self.faceCascade = cv2.CascadeClassifier("support_programs/haarcascade_frontalface_default.xml")
 
-        self.sym, self.arg = onnx_mxnet.import_model('support_programs/NN_V03_01.onnx')
+        # self.sym, self.arg = onnx_mxnet.import_model('support_programs/NN_V03_01.onnx')
+        self.sym, self.arg = onnx_mxnet.import_model('support_programs/NN_V03_Engenius_03.onnx')
+        
 
         test_image = np.zeros((350,350))
         # (1, 1, 350, 350)
