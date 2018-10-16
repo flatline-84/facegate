@@ -63,4 +63,48 @@ void loop() {
     }
   }
 
-} 
+
+
+  //-----------------------------\\
+  //------------Test-------------\\
+  //-----------------------------\\
+
+  while(1)
+  {
+    Serial.println("READY");
+    Serial.println(" ");
+    while(Serial.available()<1);//if no input, just wait
+//     if(Serial.read()=='0')
+//     {
+//          Serial.println("0 received");
+//    Serial.println(" ");
+//        Braccio.ServoMovement(20,         90, 90, 90, 90, 90,  0); 
+//
+//
+//     }//end of if
+     if(Serial.read()=='1')
+     {
+          Serial.println("1 Received");
+    Serial.println(" ");
+       Braccio.ServoMovement(20, 0, 45, 55, 45, 90,  10); //Bend to pick up
+       delay(500);
+       Braccio.ServoMovement(10, 0, 45, 55, 45, 90,  73); //Close Claw
+       delay(500);
+       Braccio.ServoMovement(20, 90, 90, 55, 90, 90,  73); 
+       delay(500);
+       Braccio.ServoMovement(20, 90, 45, 55, 45, 90,  73); 
+       delay(500);
+       Braccio.ServoMovement(20, 90, 45, 55, 45, 90,  10);
+
+       delay(1000);
+       Braccio.ServoMovement(20,         90, 90, 90, 90, 90,  73); 
+
+
+     }//end of if
+
+
+
+
+  }
+
+}

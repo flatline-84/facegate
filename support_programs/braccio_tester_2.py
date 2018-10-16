@@ -48,70 +48,6 @@ import serial
 import time
 from random import randint
 
-
-# # Sequence 1 - Pick up/put down
-# Braccio.ServoMovement(20, 0, 45, 55, 45, 90, 10); // Bend
-# to
-# pick
-# up
-# delay(500);
-# Braccio.ServoMovement(10, 0, 45, 55, 45, 90, 73); // Close
-# Claw
-# delay(500);
-# Braccio.ServoMovement(20, 180, 90, 55, 90, 90, 73);
-# delay(500);
-# Braccio.ServoMovement(20, 180, 45, 55, 45, 90, 73);
-# delay(500);
-# Braccio.ServoMovement(20, 180, 45, 55, 45, 90, 10);
-#
-# delay(1000);
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73);
-
-# Sequence 2 - Door Handle
-# Braccio.ServoMovement(20, 0, 45, 55, 45, 90, 10); // Bend
-# to
-# pick
-# up
-# delay(500);
-# Braccio.ServoMovement(10, 90, 45, 90, 45, 90, 10); // Claw open
-# Claw
-# delay(500);
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73); // Close Claw
-# delay(500);
-# Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 73); // Rotate Claw
-# delay(500);
-# Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 10); // Open Claw
-#
-# delay(1000);
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73); // Reset
-
-# Sequence 3 - Wave
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73); // Bend
-# to
-# pick
-# up
-# delay(500);
-# Braccio.ServoMovement(10, 0, 45, 90, 90, 90, 10); // Claw open
-# Claw
-# delay(500);
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 10); //  Up claw open
-# delay(500);
-# Braccio.ServoMovement(20, 90, 60, 80, 80, 90, 10); // To the side
-# delay(100);
-# Braccio.ServoMovement(20, 90, 120, 100, 100, 90, 10); // Other side
-# delay(100);
-# Braccio.ServoMovement(20, 90, 60, 80, 80, 90, 10); // To the side
-# delay(100);
-# Braccio.ServoMovement(20, 90, 120, 100, 100, 90, 10); // Other side
-# delay(100);
-# Braccio.ServoMovement(20, 90, 45, 55, 45, 180, 10); //
-#
-# delay(1000);
-# Braccio.ServoMovement(20, 90, 90, 90, 90, 90, 73); // Reset
-
-
-
-
 _DEBUG = False
 
 class Joint:                 #char to be used in packet 
@@ -157,11 +93,7 @@ class Arm:
 
 if __name__ == '__main__':
 
-    if (len(sys.argv) == 1):
-        _DEBUG = True
-    elif (len(sys.argv) == 2):
-        _DEBUG = False
-    else:
+    if (len(sys.argv) != 2):
         print("Too few or too many arguments! Insure you are only passing the Arduino port")
         print("Eg: /dev/ttyUSB0")
         exit(1)
