@@ -1,93 +1,186 @@
 from ..abstract.HardwareAbstract import HardwareAbstractClass
 import serial, time
+import operator
 
-class Servo():
+# For NN to trigger
+_THRESHOLD = 0.80
 
-    def __init__(self, servo_id):
-        self.servo = servo_id
-        self.position = 90
+# b90s90e90w90h90f90
 
-    def checkRotation(self, rot):
-
-        rot = int(rot)
-        
+class Joint:                 #char to be used in packet 
+    def __init__(self, nome, uniq_char, rot):
+        self.name = nome
+        self.rotation = rot
+        self.uniq_char = uniq_char
+    def set_rotation(self, rot):
         if (rot > 180):
-            return 180
+            rot = 180
         if (rot < 0):
-            return 0
-        else:
-            return rot
+            rot = 0
+        self.rotation = rot
 
-    def setRotation(self, rot):
-        self.position = self.checkRotation(rot)
+    def increase_rotation(self, value):
+        self.set_rotation(self.rotation + value)
+    def decrease_rotation(self, value):
+        self.increase_rotation(-value)
+    
+    def get_string(self):
+        return [str.encode(self.uniq_char), bytes([self.rotation])]
 
-    def increaseRotation(self, inc):
-        self.position = self.checkRotation(self.position + inc)
+class Arm:
+    def __init__(self):
 
-    def decreaseRotation(self, dec):
-        self.position = self.checkRotation(self.position - dec)
+        self.defaults = [90, 55, 75, 45, 90, 60]
+        self.arm = {
+            "base":     Joint("base", 'b', 90),
+            "shoulder": Joint("shoulder", 's', 90),
+            "elbow":    Joint("elbow", 'e', 90),
+            "wrist":    Joint("wrist", 'w', 90),
+            "hand":     Joint("hand", 'h', 90),
+            "fingers":  Joint("fingers", 'f', 90)
+        }
+        self.reset_arm()
 
-    def getDataPacket(self):
-        packet = str(self.servo) + "," + str(self.position)
+    def reset_arm(self):
+        i = 0
+        for k, j in self.arm.items():
+            j.set_rotation(self.defaults[i])
+            i+=1
+
+    def left(self, rot):
+        self.arm["base"].decrease_rotation(rot)
+        self.arm["hand"].decrease_rotation(rot)
+    
+    def right(self, rot):
+        self.arm["base"].increase_rotation(rot)
+        self.arm["hand"].increase_rotation(rot)
+
+    def up(self, rot):
+        self.arm["shoulder"].increase_rotation(rot)
+        self.arm["elbow"].increase_rotation(rot-1)
+        self.arm["wrist"].increase_rotation(rot-2)
+    
+    def down(self, rot):
+        self.arm["shoulder"].decrease_rotation(rot)
+        self.arm["elbow"].decrease_rotation(rot-1)
+        self.arm["wrist"].decrease_rotation(rot-2)
+
+    def mouthOpen(self, rot):
+        if self.arm["fingers"].rotation > 72:
+            self.arm["fingers"].rotation = 73
+        elif self.arm["fingers"].rotation < 11:
+            self.arm["fingers"].rotation = 10
+
+        self.arm["fingers"].decrease_rotation(rot)
+
+    def mouthClose(self, rot):
+        if self.arm["fingers"].rotation > 72:
+            self.arm["fingers"].rotation = 73
+        elif self.arm["fingers"].rotation < 11:
+            self.arm["fingers"].rotation = 10
+
+        self.arm["fingers"].increase_rotation(rot)        
+
+    def get_packet(self):
+        # should create in order (I HOPE)
+        packet = b''
+        # packet += str.encode('d')
+        # packet += bytes([20])
+        
+        for joint in self.arm.values():
+            for b in joint.get_string():
+                packet += b
+
+        packet += str.encode("\r")
         # Convert to bytes
-        # str.encode(str_)
         return packet
+
+    
+    # def randomize_rotation(self):
+    #     #try and keep it safe
+    #     for joint in self.arm.values():
+    #         num = randint(20, 160)
+    #         joint.set_rotation(num)
 
 class Arduino(HardwareAbstractClass):
 
     def init(self):
         # print ("Arduino init!")
-        print ("running magical things!")
+        # print ("running magical things!")
         # arduino = serial.Serial('/dev/cu.usbmodem1441', 9600, timeout=.1)
         try:
-            self.arduino  = serial.Serial('/dev/ttyACM0', 19200, timeout=0.1)
+            self.arduino  = serial.Serial('/dev/ttyACM0', 115200)
         except:
-            print ("Arduino not connected!")
-        # self.arduino  = serial.Serial('/dev/ttyACM0', 9600, timeout=0.1)
+            print ("Serial not connected!")
 
-        # time.sleep(1)
-        # dataVal = b"0"
-        # dataVal1 = b"45"
-        # dataVal2 = b"90"
-        # dataVal3 = b"135"
-        # dataVal4 = b"180"
-
-        # self.data = [dataVal,dataVal1,dataVal2,dataVal3,dataVal4]
-
-        self.start = time.time()
+        self.start = time.clock()
         self.counter = 0
         self.elapsed_time = 0
 
-        self.servos = [Servo(1), Servo(2)]
+        self.arm = Arm()
+        self.window = None
+        self.connected = False
+
+        self.new_motion = False
+        self.new_motion_nn = False
         # pass
 
-    def update(self, action):
+    def update(self, data):
         # print ("Doing HW things")
+
+        action, nn = data
+
+        bytesToRead = self.arduino.inWaiting()
+        rec = self.arduino.read(bytesToRead).decode("utf-8")
+        if (rec is not '' and self.window is not None):
+            self.window.print("Received: " + rec)
+            
+        if (not self.connected and "Connect" in rec):
+            self.connected = True
+            # self.arduino.write(b'm3')
+            # print("Beginning program!")
+        if (not self.connected):
+            return
 
         # print (action)
         if action is not None:
             if (action["Left"]):
-                # print ("Action left")
-                self.servos[0].increaseRotation(2)
+                self.arm.left(2)
             if (action["Right"]):
-                self.servos[0].decreaseRotation(2)
-
+                self.arm.right(2)
             if (action["Up"]):
-                self.servos[1].increaseRotation(2)
+                self.arm.up(2)
             if (action["Down"]):
-                self.servos[1].decreaseRotation(2)
+                self.arm.down(2)
+            if (action["MouthOpen"]):
+                self.arm.mouthOpen(10)
+            elif (not action["MouthOpen"]):
+                self.arm.mouthClose(2)
 
-        if (self.elapsed_time >= 8):
+            self.new_motion = True
+
+        if nn is not {}:
+            if (max(nn.values()) >= _THRESHOLD):
+                key = max(nn.items(), key=operator.itemgetter(1))[0]
+
+                if (key == "smile"):
+
+
+
+        if (self.elapsed_time >= 0.1):
             # print ("Elapsed time: ", self.elapsed_time)
             # print("Current time: ", time.time())
-            self.connect()
+            if (self.new_motion):
+                self.send_packet()
+                self.new_motion = False
             self.elapsed_time = 0
-            self.start = time.time()
+            self.start = time.clock()
         
-        self.elapsed_time += time.time() - self.start
+        self.elapsed_time += time.clock() - self.start
+
 
     def display(self, window):
-        pass
+        self.window = window
 
     def keyboard(self, key):
         pass
@@ -95,20 +188,25 @@ class Arduino(HardwareAbstractClass):
     def mouse_click(self, x, y):
         pass
 
-    def connect(self):
+    def send_packet(self, mov=None):
 
-        packet = ""
-        for s in self.servos:
-            packet += s.getDataPacket()
-            packet += ","
-        packet = packet[:-1]
-        # packet += "Z"
+        if (mov is None):
+            packet = self.arm.get_packet()
+            # packet += "Z"
+            # print ("Packet: ", packet)
+            # print ("Binary Packet: ", str.encode(packet))
 
-        print ("Packet: ", packet)
-        print ("Binary Packet: ", str.encode(packet))
-
-        try:
-            self.arduino.write(bytes(str.encode(packet)))
-            print('Sent...')
-        except:
-            print ("Arduino disconnected!")
+            try:
+                self.arduino.write(packet)
+                # if (self.window is not None):
+                #     self.window.print("Packet sent to Arduino")
+                # print('Sent...')
+            except:
+                print ("Arduino disconnected!")
+        
+        # Doing NN 
+        else:
+            try:
+                self.arduino.write(str.encode(mov))
+            except:
+                print("Arduino disconnected!")

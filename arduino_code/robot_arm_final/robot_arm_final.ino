@@ -20,6 +20,12 @@ Servo gripper;
 
 uint8_t buffer[BUF_SIZE];
 
+void serial_flush_buffer()
+{
+    while (Serial.read() >= 0)
+    ; // do nothing
+}
+
 // Sequence 1 - Pick up/put down
 void pickUp()
 {
@@ -136,13 +142,20 @@ void loop() {
     
 
     //Should be getting b for beautifully move the robot arm
-    if (buffer[0] == 'b')
+    if ((buffer[14] != '\0') && (buffer[13] != '\0') && (buffer[12] != '\0'))
+    {
+          for (int i = 0; i < BUF_SIZE; ++i)
+          {
+              buffer[i] = '\0';
+          }
+    }
+    else if (buffer[0] == 'b')
     {
         Serial.println("Performing fine movement");
-        Braccio.ServoMovement(buffer[1], buffer[3], buffer[5], buffer[7], buffer[9], buffer[11], buffer[13]);
+        Braccio.ServoMovement(10, buffer[1], buffer[3], buffer[5], buffer[7], buffer[9], buffer[11]);
     }
     // masterfully perform actions
-    if (buffer[0] == 'm')
+    else if (buffer[0] == 'm')
     {
         Serial.println("Performing masterful actions");
         switch(buffer[1])
@@ -159,6 +172,7 @@ void loop() {
             default:
                 breathe();
         }
+//        serial_flush_buffer();
     }
 
     for (int i = 0; i < BUF_SIZE; ++i)

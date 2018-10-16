@@ -201,10 +201,10 @@ if __name__ == '__main__':
             continue
 
         packet = arm.get_packet()
-        # print("Sending packet: ", (packet))
-        # if (not _DEBUG): arduino.write(packet)
-        # arm.randomize_rotation()
-        # Change this if it's too slow / fast
-        # time.sleep(5)
-        # if (not _DEBUG): arduino.write(b'm2')
-        # time.sleep(5)
+        print("Sending packet: ", (packet))
+        if (not _DEBUG): arduino.write(packet)
+        arm.randomize_rotation()
+        Change this if it's too slow / fast
+        time.sleep(5)
+        if (not _DEBUG): arduino.write(b'm2')
+        time.sleep(5)
