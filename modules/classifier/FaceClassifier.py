@@ -8,7 +8,10 @@ import cv2
 from collections import namedtuple
 from PIL import Image
 
+import time
+
 _SIZE = 350
+_DEAD_TIME = 0.5
 
 class FaceClassifier(ClassifierAbstractClass):
 
@@ -37,7 +40,7 @@ class FaceClassifier(ClassifierAbstractClass):
             "Left": False,
             "Right": False,
             "Up": False,
-            "Down": False
+            "Down": False,
         }
 
         # this won't fail if you give it the wrong file path :/
@@ -58,7 +61,11 @@ class FaceClassifier(ClassifierAbstractClass):
 
         self.Batch = namedtuple('Batch', ['data'])
         self.output_labels = ["anger", "neutral", "scream", "smile"]
-        self.nn_results = None
+        
+        self.nn_results = {}
+
+        self.start = time.clock()
+        # print(self.start)
         # print(test_image.shape)
         #,data
 
@@ -117,10 +124,10 @@ class FaceClassifier(ClassifierAbstractClass):
                                                 flags=cv2.CASCADE_SCALE_IMAGE
                                                 )
 
-        print("Got a face?")
+        # print("Got a face?")
         for (x, y, w, h) in faces:
             # Get original size of face
-            print("Do I make it here?")
+            # print("Do I make it here?")
             img = frame[y:(y+h), x:(x+w)]
             return np.asarray(Image.fromarray(img).resize((_SIZE, _SIZE)))
         return None
@@ -128,19 +135,18 @@ class FaceClassifier(ClassifierAbstractClass):
     def classify_neural_network(self, img):
         img = self.chop_face(img)
 
-        print("here?")
+        # print("here?")
         if (img is not None):
             try:
-                print(img.shape)
+                # print(img.shape)
                 self.mod.forward(self.Batch([mx.nd.array(img)]))
             except:
                 print("something failed")
-            print("output time?")
+            # print("output time?")
             output = self.mod.get_outputs()[0][0].asnumpy().tolist()
             self.nn_results = dict(zip(self.output_labels, output))
-
-            for key, value in self.nn_results.items():
-                print(key + ":" + str(value))
+            # for key, value in self.nn_results.items():
+            #     print(key + ":" + str(value))
 
 
     def update(self, data):
@@ -148,12 +154,13 @@ class FaceClassifier(ClassifierAbstractClass):
         pts, img = data
         if (len(pts) > 0):
             self.classify_point_data(pts)
-        if (len(img) > 0):
+        if (len(img) > 0 and (time.clock() - self.start > _DEAD_TIME)):
             self.classify_neural_network(img)
+            self.start = time.clock()
 
     def getAction(self):
         # print ("Face classifier action")
-        return self.actions
+        return [self.actions, self.nn_results]
 
     def display(self, window):
         pass

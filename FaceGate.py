@@ -63,8 +63,8 @@ if __name__ == '__main__':
 
         # print("Action: ", action)
 
-        # Need to give it facial points to draw and also actions
-        hardware.update([data[0], action])
+        # Need to give it facial points to draw, normal actions, NN values
+        hardware.update([data[0], action[0], action[1]])
         hardware.display(window)
 
         # hardware.connect()
